@@ -14,71 +14,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <getopt.h>
 
 #include "opt_proc.h"
 #include "f_ser.h"
+#include "interactive_prog.h"
 
-int main (int argc, const char *argv [])
+int main (int argc, char *argv [])
 {
-  char *str1   = "Programimi Sistemor";
-  char *str2   = "Eshte Cool";
-  char *f_name = ".test";
+  int opt;
 
-  char *r_str1 = NULL; /*@null@*/
-  char *r_str2 = NULL; /*@null@*/
-
-  FILE *fp     = NULL;
-
-  /* open a file */
-  printf ("\nThe file '%s' is opening ... ", f_name);
-  
-  if ((fp = fopen (f_name, "a+")) == NULL)
+  while((opt = getopt(argc, argv, "a:l:i")) != -1)
+  {
+    switch (opt)
     {
-      printf ("\nError opening the file: '%s' [Error string: '%s']",
-              f_name, strerror (errno));
-      return -1;
+      case 'a':
+        /* TODO: Add the bussiness logic. */
+        printf("Write the name of the file: ");
+        break;
+      case 'i':
+        printf("NOTE: You are now entering interactive mode!");
+        printf("Please use one of the following commands: append, list, or quit:\n");
+        
+        enter_interactive_mode();
+        break;
+      default:
+        return 0;
     }
-  
-  printf (" done");
-
-  printf ("\nThe first string '%s' is being written ... ", str1);
-  if (str_write (fp, str1) == 0)
-    {
-      return -1;
-    }
-  printf (" done");
-
-  printf ("\nThe second string '%s' is being written ... ", str2);
-  if (str_write (fp, str2) == 0)
-    {
-      return -1;
-    }
-  printf (" done");
-
-  /* reset the file pointer at the file begin  */
-  (void) fseek (fp, 0, SEEK_SET);
-  
-  printf ("\nThe first string is being read ... ");
-  if (str_read (fp, &r_str1) == 0)
-    {
-      return -1;
-    }
-  printf (" done [%s]", r_str1);
-
-  printf ("\nThe second string is being read ... ");
-  if (str_read (fp, &r_str2) == 0)
-    {
-      return -1;
-    }
-  printf (" done [%s]", r_str2);
-
-  /* close the file */
-  fclose (fp);
-
-  free (r_str1);
-  free (r_str2);
-  
-  usage  (argv [0]);
+  }
   
   return 0;
 }

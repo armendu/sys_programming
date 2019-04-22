@@ -38,8 +38,8 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/exc1
 
-$(EXE_DIR)/exc1: $(OBJ_DIR)/main.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o 
-	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o -o $(EXE_DIR)/exc1
+$(EXE_DIR)/exc1: $(OBJ_DIR)/main.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/interactive_prog.o 
+	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/interactive_prog.o -o $(EXE_DIR)/exc1
 
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(SRC_DIR)/opt_proc.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/main.o $(SRC_DIR)/main.c 
@@ -49,6 +49,9 @@ $(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
 
 $(OBJ_DIR)/f_ser.o: $(SRC_DIR)/f_ser.c $(INCLUDE_DIR)/f_ser.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/f_ser.o $(SRC_DIR)/f_ser.c
+
+$(OBJ_DIR)/interactive_prog.o: $(SRC_DIR)/interactive_prog.c $(INCLUDE_DIR)/interactive_prog.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/interactive_prog.o $(SRC_DIR)/interactive_prog.c
 
 dox:
 	mkdir -p $(DOX_DIR)
