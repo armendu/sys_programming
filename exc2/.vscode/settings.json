@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "string_compare.h": "c",
+        "signal.h": "c",
+        "f_str.h": "c"
+    }
+}

@@ -1,0 +1,101 @@
+/**
+ * Copyright (C) 2003-2019 Dipl.Ing. Dr. techn. Idriz Smaili. All rights reserved
+ * Siebenbuergerstrasse 16-26/26/17, A--1220 Wien, Austria. smaili.idriz@gmail.com
+ *
+ * @file  opt_proc.c
+ *
+ * @brief Implements functions for processing of the command line options
+ * 
+ * @author (IS) Dr.techn. Dipl.-Ing. Idriz Smaili (smaili.idriz@gmail.com)
+ * @date   $Date: Fri Apr 19, 15:27:59 WEST 2019 $
+ */
+
+#include <stdio.h>
+/* #include <stdlib.h> */
+#include <malloc.h>
+#include <unistd.h>
+
+#include "f_ser.h"
+
+static int str_len (const char *str)
+{
+  register int count = 0;
+
+  while (*str++ != '\0')
+    {
+      count++;
+    }
+
+  return count;
+}
+
+int str_write (FILE *fp, const char *str)
+{
+  int status = 0;
+  int length = 0; 
+
+  length = str_len (str);
+
+  status = (int) fwrite ((const void *) &length,
+                         (size_t) 1, 
+			 (size_t) SER_INT_LEN, 
+			 fp);
+
+  if (status == 0)
+    {
+       printf ("\nError writing length of string '%s' to the file", str);
+       return status;
+    }
+
+  status = (int) fwrite ((const void *) str,
+                         (size_t) 1, 
+			 (size_t) length, 
+			 fp);
+
+  if (status == 0)
+    {
+       printf ("\nError writing string '%s' to the file", str);
+    }
+
+  return status;
+}
+
+int str_read (FILE *fp, char **dst)
+{
+  int   s_len  = 0;
+  int   status = 0;
+  char *ptr    = NULL;
+
+  status = fread ( (void *) &s_len, 
+ 		   (size_t) 1,
+		   (size_t) SER_INT_LEN,
+		   fp);
+
+   if (status == 0)
+     {
+       printf ("\nError reading from file");
+       return status;
+     }
+
+  ptr = (char *) malloc ((size_t) s_len + 1);
+ 
+  if (ptr == NULL)
+     {
+       printf ("\nError allocating memory");
+       return SER_ALLOC_ERROR;
+     }
+
+  status = fread ( (void *) ptr, 
+ 		   (size_t) 1,
+		   (size_t) s_len,
+		   fp);
+
+   ptr [s_len] = '\0';
+
+   if (status == 0)
+     {
+       printf ("\nError reading from file");
+     }
+
+   return status;
+}

@@ -1,0 +1,20 @@
+/** 
+ * Copyright (C) 2003 Dipl.Ing. Dr. techn. Idriz Smaili. All rights reserved
+ * Siebenbuergerstrasse 16-26/26/17, A--1220 Wien, Austria. smaili.idriz@gmail.com
+ *
+ * @file  opt_proc.h
+ *
+ * @brief Provides functions for processing of the command line options
+ * 
+ * @author (IS) Dr.techn. Dipl.-Ing. Idriz Smaili (smaili@swengLab.com)
+ * @date   $Date: Mon Mar  7 09:13:59 WEST 2005 $
+ */
+
+#ifndef _OPT_PROC__H
+#define _OPT_PROC__H
+
+void usage (void);
+
+#endif /* _OPT_PROC__H */
+
+ 
