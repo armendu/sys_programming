@@ -14,13 +14,15 @@
 #define _F_SER_H 1_
 
 #include <stdio.h>
+#include "student.h"
 
 #define SER_EOF         -2
 #define SER_ALLOC_ERROR -1
 #define SER_INT_LEN      4
 
-int str_len   (          /*@null@*/ const char  *str);
-int str_write (FILE *fp, /*@null@*/ const char  *str);
-int str_read  (FILE *fp, /*@null@*/       char **str);
+int str_len         (          /*@null@*/ const char        *str);
+int student_write   (FILE *fp, student_t s);
+int student_read    (FILE *fp);
+int get_no_bytes    (FILE *fp);
 
 #endif /* _F_SER_H */

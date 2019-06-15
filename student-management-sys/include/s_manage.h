@@ -10,12 +10,14 @@
  * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
  */
 
-#ifndef _F_APPEND_H
-#define _F_APPEND_H 1_ 
+#ifndef _S_MANAGE_H
+#define _S_MANAGE_H 1_ 
 #define MAX 50
 
 #include <stdio.h>
 
-int append_student(FILE **fp);
+#include "student.h"
 
-#endif /* _F_APPEND_H */
+int get_student_info(student_t *s);
+
+#endif /* _S_MANAGE_H */

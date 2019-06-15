@@ -17,7 +17,8 @@
 
 #include "f_ser.h"
 #include "opt_proc.h"
-#include "f_append.h"
+#include "s_manage.h"
+#include "student.h"
 
 int main(int argc, char *argv[])
 {
@@ -34,12 +35,15 @@ int main(int argc, char *argv[])
 	/* open a file */
 	printf("\nThe file '%s' is opening ...\n", f_name);
 
-	if ((fp = fopen(f_name, "a+")) == NULL)
+	if ((fp = fopen(f_name, "w")) == NULL)
 	{
 		printf("\nError opening the file: '%s' [Error string: '%s']",
 					 f_name, strerror(errno));
 		return -1;
 	}
+
+
+	student_t student;
 
 	switch (mode)
 	{
@@ -47,9 +51,37 @@ int main(int argc, char *argv[])
 			/* interactive mode */
 			break;
 		case 'a':
-			if(append_student(&fp) == -1)
+			if(get_student_info(&student) == 0)
 			{
-				printf("Error occurred with writing file\n");
+				if (student_write(fp, student) == 0)
+				{
+					printf("\nAn error occurred while writing information to file");
+					return -1;
+				}
+
+				printf("\n%s", student.firstname);
+				printf("\n%s", student.lastname);
+				printf("\n%s", student.indexNumber);
+				printf("\n%d", student.age);
+				printf("\n%s", student.address);
+
+				/* reset the file pointer at the file begin  */
+				(void)fseek(fp, 0, SEEK_SET);
+
+				if (student_read(fp) == 0)
+				{
+					printf("\nAn error occurred while reading information from file");
+					return -1;
+				}
+
+				int no_students = 0; /*@null@*/
+
+				printf("\nThe length is being written ... ");
+
+				no_students = get_no_bytes(fp);
+
+				printf(" done [%d]", no_students);
+				printf("Error occurred while writing file.\n");
 			}
 			break;
 		case 'l':
@@ -59,24 +91,6 @@ int main(int argc, char *argv[])
 			return -1;
 			break;
 	}
-
-	char *str1 = "Programimi Sistemor";
-
-	printf("\nThe first string '%s' is being written ... ", str1);
-	if (str_write(fp, str1) == 0)
-	{
-		return -1;
-	}
-	printf(" done");
-
-	char *str2 = "user";
-
-  printf ("\nThe second string '%s' is being written ... ", str2);
-  if (str_write (fp, str2) == 0)
-	{
-		return -1;
-	}
-  printf (" done");
 
   /* reset the file pointer at the file begin  */
   (void) fseek (fp, 0, SEEK_SET);

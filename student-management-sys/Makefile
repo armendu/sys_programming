@@ -44,8 +44,8 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/student_management_sys 
 
-$(EXE_DIR)/student_management_sys: $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_append.o
-	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_append.o -o $(EXE_DIR)/student_management_sys
+$(EXE_DIR)/student_management_sys: $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o
+	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o -o $(EXE_DIR)/student_management_sys
 
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/main.o $(SRC_DIR)/main.c
@@ -56,8 +56,8 @@ $(OBJ_DIR)/f_ser.o: $(SRC_DIR)/f_ser.c $(INCLUDE_DIR)/f_ser.h
 $(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/opt_proc.o $(SRC_DIR)/opt_proc.c
 
-$(OBJ_DIR)/f_append.o: $(SRC_DIR)/f_append.c $(INCLUDE_DIR)/f_append.h
-	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/f_append.o $(SRC_DIR)/f_append.c
+$(OBJ_DIR)/s_manage.o: $(SRC_DIR)/s_manage.c $(INCLUDE_DIR)/s_manage.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/s_manage.o $(SRC_DIR)/s_manage.c
 
 dox:
 	mkdir -p $(DOX_DIR)

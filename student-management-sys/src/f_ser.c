@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "f_ser.h"
+#include "student.h"
 
 /***************************************************************************/ /** 
  * @brief Returns the number of characters in a given string
@@ -47,30 +48,18 @@ int str_len(const char *str)
  * @retval 0  in case an error was occured
  * @retval >0 number of bytes written in the file
  ******************************************************************************/
-int str_write(FILE *fp, const char *str)
+int student_write(FILE *fp, student_t s)
 {
   int status = 0;
-  int length = 0;
 
-  length = str_len(str);
-
-  status = (int)fwrite((const void *)&length, (size_t)1,
-                       (size_t)SER_INT_LEN, fp);
+  status = (int) fwrite (&s, sizeof(student_t), (size_t) 1, fp);
 
   if (status == 0)
   {
-    printf("\nError writing length of string '%s' to the file", str);
-    return status;
+      printf ("\nError writing string to the file.");
   }
 
-  status = (int)fwrite((const void *)str, (size_t)1,
-                       (size_t)length, fp);
-
-  if (status == 0)
-  {
-    printf("\nError writing string '%s' to the file", str);
-  }
-
+  printf("\nDone");
   return status;
 }
 
@@ -87,11 +76,33 @@ int str_write(FILE *fp, const char *str)
  * @retval -1 error allocating memory was occured
  * @retval >0 number of bytes written in the file
  ******************************************************************************/
-int str_read(FILE *fp, /*@null@*/ char **dst)
+int student_read (FILE *fp)
+{
+  struct student_t student;
+  int status = 0;
+
+  while((status = fread (&student, (size_t) sizeof(struct student_t), (size_t) 1, fp)))
+  {
+    if (status == 0)
+    {
+      printf ("\nError reading from file");
+      return status;
+    }
+  }
+
+  printf ("\n\nStudent First Name: %s", student.firstname);
+    printf ("\nStudent Last Name: %s", student.lastname);
+    printf ("\nStudent Id: %s", student.indexNumber);
+    printf ("\nStudent Age: %d", student.age);
+    printf ("\nStudent Address: %s", student.address);
+
+  return status;
+}
+
+int get_no_bytes(FILE *fp)
 {
   int s_len = 0;
   int status = 0;
-  char *ptr = NULL;
 
   status = fread((void *)&s_len, (size_t)1,
                  (size_t)SER_INT_LEN, fp);
@@ -109,24 +120,5 @@ int str_read(FILE *fp, /*@null@*/ char **dst)
     }
   }
 
-  ptr = (char *)malloc((size_t)s_len + 1);
-
-  if (ptr == NULL)
-  {
-    printf("\nError allocating memory");
-    return SER_ALLOC_ERROR;
-  }
-
-  status = fread((void *)ptr, (size_t)1,
-                 (size_t)s_len, fp);
-
-  ptr[s_len] = '\0';
-
-  if (status == 0)
-  {
-    printf("\nError reading from file");
-  }
-
-  *dst = ptr;
   return status;
 }
