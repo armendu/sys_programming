@@ -10,10 +10,6 @@
  * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
  */
 
-#ifndef _OPT_PROC__H
-#define _OPT_PROC__H
-
-void usage (const char *app_name);
-char get_file_name(int argc, char **argv, char** f_name);
-
-#endif /* _OPT_PROC__H */
+int main(int argc, char *argv[])
+{
+}

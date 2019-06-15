@@ -12,9 +12,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <getopt.h>
-#include <string.h>
 #include <errno.h>
+#include <string.h>
 
 #include "f_ser.h"
 #include "opt_proc.h"
@@ -23,37 +22,14 @@ int main(int argc, char *argv[])
 {
 	FILE *fp 			= NULL;
 	char *f_name 	= NULL;
-	char *input 	= NULL;
+	
 
-	int opt;
-	while ((opt = getopt(argc, argv, "f:ali:")) != -1)
+	char mode = get_file_name(argc, argv, &f_name);
+	
+	if (mode == -1)
 	{
-		switch (opt)
-		{
-		case 'f':
-			f_name = optarg;
-			printf("\nGot f with filename: %s\n", optarg);
-			break;
-		case 'a':
-			printf("Write the name of the file: ");
-			break;
-		case 'i':
-			printf("You are entering interactive mode, please type your next command:");
-			while (1)
-			{
-				scanf("%s", input);
-				/*enter_interactive_mode(input); */
-			}
-			break;
-		case ':':
-			printf("Option '-f' needs a value.\n");
-			return -1;
-			break;
-		default:
-			usage(argv[0]);
-			return -1;
-		}
-	}	
+		printf("An error occurred while setting the program mode.\n");
+	}
 
 	/* open a file */
 	printf("\nThe file '%s' is opening ... ", f_name);
@@ -63,6 +39,22 @@ int main(int argc, char *argv[])
 		printf("\nError opening the file: '%s' [Error string: '%s']",
 					 f_name, strerror(errno));
 		return -1;
+	}
+
+	switch (mode)
+	{
+		case 'i':
+			/* interactive mode */
+			break;
+		case 'a':
+			
+			break;
+		case 'l':
+			/* list all files */
+			break;
+		default:
+			return -1;
+			break;
 	}
 
 	char *str1 = "Programimi Sistemor";
