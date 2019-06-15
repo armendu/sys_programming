@@ -17,13 +17,13 @@
 
 #include "f_ser.h"
 #include "opt_proc.h"
+#include "f_append.h"
 
 int main(int argc, char *argv[])
 {
 	FILE *fp 			= NULL;
 	char *f_name 	= NULL;
 	
-
 	char mode = get_file_name(argc, argv, &f_name);
 	
 	if (mode == -1)
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* open a file */
-	printf("\nThe file '%s' is opening ... ", f_name);
+	printf("\nThe file '%s' is opening ...\n", f_name);
 
 	if ((fp = fopen(f_name, "a+")) == NULL)
 	{
@@ -47,7 +47,10 @@ int main(int argc, char *argv[])
 			/* interactive mode */
 			break;
 		case 'a':
-			
+			if(append_student(&fp) == -1)
+			{
+				printf("Error occurred with writing file\n");
+			}
 			break;
 		case 'l':
 			/* list all files */
@@ -65,6 +68,21 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	printf(" done");
+
+	char *str2 = "user";
+
+  printf ("\nThe second string '%s' is being written ... ", str2);
+  if (str_write (fp, str2) == 0)
+	{
+		return -1;
+	}
+  printf (" done");
+
+  /* reset the file pointer at the file begin  */
+  (void) fseek (fp, 0, SEEK_SET);
+
+  /* close the file */
+  fclose (fp);
 
 	return 0;
 }

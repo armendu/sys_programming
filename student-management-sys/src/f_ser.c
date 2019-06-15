@@ -75,7 +75,7 @@ int str_write(FILE *fp, const char *str)
 }
 
 /***************************************************************************/ /** 
- * @brief Reads an string from the file 
+ * @brief Reads a string from the file 
  *
  * First the four (4) bytes will be read, which indicate the length of the
  * string to be read, and then the string itself will be read.
