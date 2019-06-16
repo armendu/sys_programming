@@ -1,0 +1,85 @@
+\hypertarget{cmd__modes_8c}{}\section{src/cmd\+\_\+modes.c File Reference}
+\label{cmd__modes_8c}\index{src/cmd\+\_\+modes.\+c@{src/cmd\+\_\+modes.\+c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}cmd\+\_\+modes.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}student.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}s\+\_\+manage.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}f\+\_\+ser.\+h\char`\"{}}\newline
+Include dependency graph for cmd\+\_\+modes.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/daf/cmd__modes_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{cmd__modes_8c_a5a2a76e18bbd8b8cd9026f1cee18f197}{A\+P\+P\+E\+ND}~\char`\"{}append\char`\"{}
+\item 
+\#define \hyperlink{cmd__modes_8c_aed0a8f83088c41d721066cd5b3b9a00c}{L\+I\+ST}~\char`\"{}list\char`\"{}
+\item 
+\#define \hyperlink{cmd__modes_8c_ad24e2b54375e12474e65ebf7175988fb}{Q\+U\+IT}~\char`\"{}quit\char`\"{}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{cmd__modes_8c_a6bd3f4c41159820ee0125c2b6fd288e6}{enter\+\_\+interactive\+\_\+mode} (F\+I\+LE $\ast$fp)
+\item 
+void \hyperlink{cmd__modes_8c_a7660b65e581939cb0ef67b29cb152163}{enter\+\_\+append\+\_\+mode} (F\+I\+LE $\ast$fp)
+\item 
+void \hyperlink{cmd__modes_8c_af40fd7b8adb0868e83a057309597583f}{enter\+\_\+listing\+\_\+mode} (F\+I\+LE $\ast$fp)
+\item 
+void \hyperlink{cmd__modes_8c_ae6040be3d996836ef906f2bc3a359425}{start\+\_\+cmd\+\_\+mode} (F\+I\+LE $\ast$fp, char mode)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{cmd__modes_8c_a5a2a76e18bbd8b8cd9026f1cee18f197}\label{cmd__modes_8c_a5a2a76e18bbd8b8cd9026f1cee18f197}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!A\+P\+P\+E\+ND@{A\+P\+P\+E\+ND}}
+\index{A\+P\+P\+E\+ND@{A\+P\+P\+E\+ND}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{A\+P\+P\+E\+ND}{APPEND}}
+{\footnotesize\ttfamily \#define A\+P\+P\+E\+ND~\char`\"{}append\char`\"{}}
+
+\mbox{\Hypertarget{cmd__modes_8c_aed0a8f83088c41d721066cd5b3b9a00c}\label{cmd__modes_8c_aed0a8f83088c41d721066cd5b3b9a00c}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!L\+I\+ST@{L\+I\+ST}}
+\index{L\+I\+ST@{L\+I\+ST}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{L\+I\+ST}{LIST}}
+{\footnotesize\ttfamily \#define L\+I\+ST~\char`\"{}list\char`\"{}}
+
+\mbox{\Hypertarget{cmd__modes_8c_ad24e2b54375e12474e65ebf7175988fb}\label{cmd__modes_8c_ad24e2b54375e12474e65ebf7175988fb}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!Q\+U\+IT@{Q\+U\+IT}}
+\index{Q\+U\+IT@{Q\+U\+IT}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{Q\+U\+IT}{QUIT}}
+{\footnotesize\ttfamily \#define Q\+U\+IT~\char`\"{}quit\char`\"{}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{cmd__modes_8c_a7660b65e581939cb0ef67b29cb152163}\label{cmd__modes_8c_a7660b65e581939cb0ef67b29cb152163}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!enter\+\_\+append\+\_\+mode@{enter\+\_\+append\+\_\+mode}}
+\index{enter\+\_\+append\+\_\+mode@{enter\+\_\+append\+\_\+mode}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{enter\+\_\+append\+\_\+mode()}{enter\_append\_mode()}}
+{\footnotesize\ttfamily void enter\+\_\+append\+\_\+mode (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{fp }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{cmd__modes_8c_a6bd3f4c41159820ee0125c2b6fd288e6}\label{cmd__modes_8c_a6bd3f4c41159820ee0125c2b6fd288e6}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!enter\+\_\+interactive\+\_\+mode@{enter\+\_\+interactive\+\_\+mode}}
+\index{enter\+\_\+interactive\+\_\+mode@{enter\+\_\+interactive\+\_\+mode}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{enter\+\_\+interactive\+\_\+mode()}{enter\_interactive\_mode()}}
+{\footnotesize\ttfamily void enter\+\_\+interactive\+\_\+mode (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{fp }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{cmd__modes_8c_af40fd7b8adb0868e83a057309597583f}\label{cmd__modes_8c_af40fd7b8adb0868e83a057309597583f}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!enter\+\_\+listing\+\_\+mode@{enter\+\_\+listing\+\_\+mode}}
+\index{enter\+\_\+listing\+\_\+mode@{enter\+\_\+listing\+\_\+mode}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{enter\+\_\+listing\+\_\+mode()}{enter\_listing\_mode()}}
+{\footnotesize\ttfamily void enter\+\_\+listing\+\_\+mode (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{fp }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{cmd__modes_8c_ae6040be3d996836ef906f2bc3a359425}\label{cmd__modes_8c_ae6040be3d996836ef906f2bc3a359425}} 
+\index{cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}!start\+\_\+cmd\+\_\+mode@{start\+\_\+cmd\+\_\+mode}}
+\index{start\+\_\+cmd\+\_\+mode@{start\+\_\+cmd\+\_\+mode}!cmd\+\_\+modes.\+c@{cmd\+\_\+modes.\+c}}
+\subsubsection{\texorpdfstring{start\+\_\+cmd\+\_\+mode()}{start\_cmd\_mode()}}
+{\footnotesize\ttfamily void start\+\_\+cmd\+\_\+mode (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{fp,  }\item[{char}]{mode }\end{DoxyParamCaption})}
+
