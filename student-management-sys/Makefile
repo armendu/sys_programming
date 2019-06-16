@@ -44,8 +44,8 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/student_management_sys 
 
-$(EXE_DIR)/student_management_sys: $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o
-	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o -o $(EXE_DIR)/student_management_sys
+$(EXE_DIR)/student_management_sys: $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o $(OBJ_DIR)/cmd_modes.o
+	gcc $(OBJ_DIR)/main.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/s_manage.o $(OBJ_DIR)/cmd_modes.o -o $(EXE_DIR)/student_management_sys
 
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/main.o $(SRC_DIR)/main.c
@@ -59,6 +59,8 @@ $(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
 $(OBJ_DIR)/s_manage.o: $(SRC_DIR)/s_manage.c $(INCLUDE_DIR)/s_manage.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/s_manage.o $(SRC_DIR)/s_manage.c
 
+$(OBJ_DIR)/cmd_modes.o: $(SRC_DIR)/cmd_modes.c $(INCLUDE_DIR)/cmd_modes.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/cmd_modes.o $(SRC_DIR)/cmd_modes.c
 dox:
 	mkdir -p $(DOX_DIR)
 	@echo "Created doxygen directory."

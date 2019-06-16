@@ -30,14 +30,14 @@ void usage (const char *app_name)
 
 char set_mode(int argc, char **argv, char** f_name)
 {
-	int   f     = -1;
-  char  mode  = 'i';
+	int f_set	= 0;
+  int mode 	= 0;
 
   /* Check no. of arguments */
 	if(argc > 4)
 	{
 		printf("Too many arguments provided. \n");
-		return -1;
+		return 0;
 	}
 
 	int opt;
@@ -46,11 +46,12 @@ char set_mode(int argc, char **argv, char** f_name)
 		switch (opt)
 		{
 			case 'f':
-        f = (int)atol(optarg);
+        f_set = opt;
 				*f_name = optarg;
-				printf("\nGot f with filename: %s\n", optarg);
 				break;
 			case 'i':
+				mode = opt;
+				break;
 			case 'l':
 			case 'a':
 				mode = opt;
@@ -60,11 +61,11 @@ char set_mode(int argc, char **argv, char** f_name)
 				return -1;
 		}
 	}
-
-	if (f == -1)
+	
+	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");
-		return -1;
+		return 0;
 	}
 
   return mode;
@@ -74,6 +75,6 @@ void handle_sigint(int sig_num)
 {
   signal(SIGINT, handle_sigint);
   fflush(stdout);
-  printf("\nClosing... \n");
-  exit(0);
+  printf("\nShutting down...\n");
+  exit(-1);
 }

@@ -85,15 +85,15 @@ int student_read (FILE *fp)
     if (status == 0)
     {
       printf ("\nError reading from file");
-      return status;
+      return 0;
     }
   }
 
   printf ("\n\nStudent First Name: %s", student.firstname);
-    printf ("\nStudent Last Name: %s", student.lastname);
-    printf ("\nStudent Id: %s", student.indexNumber);
-    printf ("\nStudent Age: %d", student.age);
-    printf ("\nStudent Address: %s", student.address);
+  printf ("\nStudent Last Name: %s", student.lastname);
+  printf ("\nStudent Id: %s", student.indexNumber);
+  printf ("\nStudent Age: %d", student.age);
+  printf ("\nStudent Address: %s", student.address);
 
-  return status;
+  return 1;
 }
