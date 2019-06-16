@@ -88,14 +88,7 @@ int get_no_students(FILE *fp)
             printf ("\nError reading from file");
             return internal_status;
         }
-
-        /*
-        printf ("\n\nStudent First Name: %s", student.FirstName);
-        printf ("\nStudent Last Name: %s", student.LastName);
-        printf ("\nStudent Id: %ld", student.IndexNumber);
-        printf ("\nStudent Age: %d", student.Age);
-        printf ("\nStudent Address: %s", student.Address);
-         */
+        
         status = internal_status;
     }
 

@@ -16,10 +16,6 @@
 #include <stdio.h>
 #include "student.h"
 
-#define SER_EOF         -2
-#define SER_ALLOC_ERROR -1
-#define SER_INT_LEN      4
-
 int str_len       (          const char *str);
 int student_write (FILE *fp, student_t   s);
 int student_read  (FILE *fp);

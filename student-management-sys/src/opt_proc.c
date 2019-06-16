@@ -30,8 +30,8 @@ void usage (const char *app_name)
 
 char set_mode(int argc, char **argv, char** f_name)
 {
-	int f_set	= 0;
-  int mode 	= 0;
+	int  f_set	= 0;
+  char mode 	= 'i';
 
   /* Check no. of arguments */
 	if(argc > 4)
@@ -57,7 +57,6 @@ char set_mode(int argc, char **argv, char** f_name)
 				mode = opt;
 				break;
 			default:
-				usage(argv[0]);
 				return -1;
 		}
 	}
@@ -65,6 +64,7 @@ char set_mode(int argc, char **argv, char** f_name)
 	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");
+		usage(argv[0]);
 		return 0;
 	}
 

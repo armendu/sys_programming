@@ -28,9 +28,10 @@ int main(int argc, char *argv[])
 	
 	char mode = set_mode(argc, argv, &f_name);
 	
-	if (mode == 0)
+	if (mode == 0 || f_name == NULL)
 	{
-		printf("An error occurred while setting the program mode.\n");
+		printf("\nPlease provide a file using the '-f' option.\n");
+		return -1;
 	}
 
 	/* open a file */

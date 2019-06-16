@@ -48,9 +48,9 @@ void start_cmd_mode(FILE *fp, char mode)
 void enter_interactive_mode(FILE *fp)
 {
   char input[50];
-  printf("\nPlease write one of the commands: append, list, or quit: ");
   while (1)
   {
+    printf("\nPlease write one of the commands: append, list, or quit: ");
     if (fgets(input, sizeof(input), stdin) != NULL)
     {
       int s_len = str_len(input);
@@ -98,9 +98,9 @@ void enter_listing_mode(FILE *fp)
   /* reset the file pointer at the file begin  */
   (void)fseek(fp, 0, SEEK_SET);
 
+  printf("\nReading information from the file now...");
   if (student_read(fp) == 0)
   {
     return;
   }
-  printf("\nSuccessfully read the information from file.");
 }

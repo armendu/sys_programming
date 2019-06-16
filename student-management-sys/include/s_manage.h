@@ -11,8 +11,7 @@
  */
 
 #ifndef _S_MANAGE_H
-#define _S_MANAGE_H 1_ 
-#define MAX 50
+#define _S_MANAGE_H 1_
 
 #include <stdio.h>
 

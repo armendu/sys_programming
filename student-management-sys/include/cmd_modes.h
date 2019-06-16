@@ -11,7 +11,7 @@
  */
 
 #ifndef _CMD_MODES__H
-#define _CMD_MODES__H
+#define _CMD_MODES__H 1_
 
 #include <stdio.h>
 

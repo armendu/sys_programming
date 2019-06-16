@@ -87,13 +87,13 @@ int student_read (FILE *fp)
       printf ("\nError reading from file");
       return 0;
     }
+  
+    printf("\n\nFirstname:    \t%s", student.firstname);
+    printf("\nLastname:       \t%s", student.lastname);
+    printf("\nIndex number:   \t%s", student.indexNumber);
+    printf("\nAge:            \t%d", student.age);
+    printf("\nAddress:        \t%s", student.address);
   }
-
-  printf ("\n\nStudent First Name: %s", student.firstname);
-  printf ("\nStudent Last Name: %s", student.lastname);
-  printf ("\nStudent Id: %s", student.indexNumber);
-  printf ("\nStudent Age: %d", student.age);
-  printf ("\nStudent Address: %s", student.address);
 
   return 1;
 }
