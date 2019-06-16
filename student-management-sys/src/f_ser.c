@@ -48,18 +48,17 @@ int str_len(const char *str)
  * @retval 0  in case an error was occured
  * @retval >0 number of bytes written in the file
  ******************************************************************************/
-int student_write(FILE *fp, student_t s)
+int student_write(FILE *fp, student_t student)
 {
   int status = 0;
 
-  status = (int) fwrite (&s, sizeof(student_t), (size_t) 1, fp);
+  status = (int) fwrite (&student, sizeof(struct student_t), (size_t) 1, fp);
 
   if (status == 0)
   {
-      printf ("\nError writing string to the file.");
+    printf ("\nAn error occurred while writing to file.");
   }
 
-  printf("\nDone");
   return status;
 }
 
@@ -95,30 +94,6 @@ int student_read (FILE *fp)
     printf ("\nStudent Id: %s", student.indexNumber);
     printf ("\nStudent Age: %d", student.age);
     printf ("\nStudent Address: %s", student.address);
-
-  return status;
-}
-
-int get_no_bytes(FILE *fp)
-{
-  int s_len = 0;
-  int status = 0;
-
-  status = fread((void *)&s_len, (size_t)1,
-                 (size_t)SER_INT_LEN, fp);
-
-  if (status == 0)
-  {
-    if (feof(fp) != 0)
-    {
-      return SER_EOF;
-    }
-    else
-    {
-      printf("\nError reading from file");
-      return status;
-    }
-  }
 
   return status;
 }

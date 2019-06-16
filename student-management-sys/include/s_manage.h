@@ -18,6 +18,6 @@
 
 #include "student.h"
 
-int get_student_info(student_t *s);
+void get_student_info(student_t *s);
 
 #endif /* _S_MANAGE_H */

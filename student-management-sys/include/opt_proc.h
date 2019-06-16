@@ -14,6 +14,7 @@
 #define _OPT_PROC__H
 
 void usage (const char *app_name);
-char get_file_name(int argc, char **argv, char** f_name);
+char set_mode(int argc, char **argv, char** f_name);
+void handle_sigint(int sig_num);
 
 #endif /* _OPT_PROC__H */

@@ -14,13 +14,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <signal.h>
 
 #include "opt_proc.h"
-
-/* static char file_opt  = 0x0; */
-/* static char outpu_opt = 0x0; */
-
-/* static char * opt_arg1 = NULL; */
 
 void usage (const char *app_name)
 {
@@ -32,7 +28,7 @@ void usage (const char *app_name)
   printf ("\t -l,          (optional) list all strings stored in the file\n");
 }
 
-char get_file_name(int argc, char **argv, char** f_name)
+char set_mode(int argc, char **argv, char** f_name)
 {
 	int   f     = -1;
   char  mode  = 'i';
@@ -40,8 +36,8 @@ char get_file_name(int argc, char **argv, char** f_name)
   /* Check no. of arguments */
 	if(argc > 4)
 	{
-			printf("Too many arguments provided. \n");
-			return -1;
+		printf("Too many arguments provided. \n");
+		return -1;
 	}
 
 	int opt;
@@ -72,4 +68,12 @@ char get_file_name(int argc, char **argv, char** f_name)
 	}
 
   return mode;
+}
+
+void handle_sigint(int sig_num)
+{
+  signal(SIGINT, handle_sigint);
+  fflush(stdout);
+  printf("\nClosing... \n");
+  exit(0);
 }

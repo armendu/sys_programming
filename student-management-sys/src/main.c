@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 
 #include "f_ser.h"
 #include "opt_proc.h"
@@ -22,10 +23,11 @@
 
 int main(int argc, char *argv[])
 {
+	signal(SIGINT, handle_sigint);
 	FILE *fp 			= NULL;
 	char *f_name 	= NULL;
 	
-	char mode = get_file_name(argc, argv, &f_name);
+	char mode = set_mode(argc, argv, &f_name);
 	
 	if (mode == -1)
 	{
@@ -35,13 +37,12 @@ int main(int argc, char *argv[])
 	/* open a file */
 	printf("\nThe file '%s' is opening ...\n", f_name);
 
-	if ((fp = fopen(f_name, "w")) == NULL)
+	if ((fp = fopen(f_name, "a+")) == NULL)
 	{
 		printf("\nError opening the file: '%s' [Error string: '%s']",
 					 f_name, strerror(errno));
 		return -1;
 	}
-
 
 	student_t student;
 
@@ -51,50 +52,29 @@ int main(int argc, char *argv[])
 			/* interactive mode */
 			break;
 		case 'a':
-			if(get_student_info(&student) == 0)
+			get_student_info(&student);
+			
+			if (student_write(fp, student) == 0)
 			{
-				if (student_write(fp, student) == 0)
-				{
-					printf("\nAn error occurred while writing information to file");
-					return -1;
-				}
-
-				printf("\n%s", student.firstname);
-				printf("\n%s", student.lastname);
-				printf("\n%s", student.indexNumber);
-				printf("\n%d", student.age);
-				printf("\n%s", student.address);
-
+				return -1;
+			}
+			printf("\nSuccessfully wrote the information to file.");
+			break;
+		case 'l':
 				/* reset the file pointer at the file begin  */
 				(void)fseek(fp, 0, SEEK_SET);
 
 				if (student_read(fp) == 0)
 				{
-					printf("\nAn error occurred while reading information from file");
 					return -1;
 				}
-
-				int no_students = 0; /*@null@*/
-
-				printf("\nThe length is being written ... ");
-
-				no_students = get_no_bytes(fp);
-
-				printf(" done [%d]", no_students);
-				printf("Error occurred while writing file.\n");
-			}
-			break;
-		case 'l':
-			/* list all files */
 			break;
 		default:
 			return -1;
 			break;
 	}
 
-  /* reset the file pointer at the file begin  */
-  (void) fseek (fp, 0, SEEK_SET);
-
+	printf("\nClosing now...\n");
   /* close the file */
   fclose (fp);
 

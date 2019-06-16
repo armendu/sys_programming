@@ -13,13 +13,18 @@
 #ifndef _STUDENT_H
 #define _STUDENT_H 1_
 
+#define FIRSTNAME_LENGTH 50
+#define LASTNAME_LENGTH  50
+#define INDEX_LENGTH     50
+#define ADDRESS_LENGTH   50
+
 typedef struct student_t
 {
-  char          *firstname;
-  char          *lastname;
-  char          *indexNumber;
+  char          firstname   [FIRSTNAME_LENGTH];
+  char          lastname    [LASTNAME_LENGTH];
+  char          indexNumber [INDEX_LENGTH];
+  char          address     [ADDRESS_LENGTH];
   int unsigned  age;
-  char          *address;
 } student_t;
 
 
