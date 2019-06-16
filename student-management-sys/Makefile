@@ -70,6 +70,9 @@ dox:
 splint:
 	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/main.c
 	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/f_ser.c
+	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/opt_proc.c
+	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/s_manage.c
+	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/cmd_modes.c
 
 clean:
 	rm -rf $(OBJ_DIR) $(DOX_DIR) $(EXE_DIR) $(OUT_DIR) 
