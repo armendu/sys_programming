@@ -1,13 +1,13 @@
-/**
- * Copyright (C) 2003-2019 Dipl.Ing. Dr. techn. Idriz Smaili. All rights reserved
- * Siebenbuergerstrasse 16-26/26/17, A--1220 Wien, Austria. smaili.idriz@gmail.com
+ /**
+ * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
+ * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
  * @file  f_ser.c
  *
- * @brief Implements functions for the string file serialization 
+ * @brief Implements functions for the student file serialization
  * 
- * @author (IS) Dr.techn. Dipl.-Ing. Idriz Smaili (smaili.idriz@gmail.com)
- * @date   $Date: Fri Apr 20, 15:27:59 WEST 2019 $
+ * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
+ * @date   $Date: 19 May 19, 18:02:55 WEST 2019 $
  */
 
 #include <stdio.h>
@@ -37,13 +37,10 @@ int str_len(const char *str)
 }
 
 /***************************************************************************/ /** 
- * @brief Writes an input string into the file 
- *
- * First the four (4) bytes will be written indicating the length of the
- * string to be written, and then the string itself will be written.
+ * @brief Writes a student into the file 
  *
  * @param[in,out] fp - file pointer
- * @param[in] str - the input string
+ * @param[in] student - the student to be written
  *
  * @retval 0  in case an error was occured
  * @retval >0 number of bytes written in the file
@@ -63,17 +60,12 @@ int student_write(FILE *fp, student_t student)
 }
 
 /***************************************************************************/ /** 
- * @brief Reads a string from the file 
- *
- * First the four (4) bytes will be read, which indicate the length of the
- * string to be read, and then the string itself will be read.
+ * @brief Reads students from the file 
  *
  * @param[in,out] fp - file pointer
- * @param[out] dst - pointer to the newly allocated string 
  *
  * @retval 0  in case an error was occured
- * @retval -1 error allocating memory was occured
- * @retval >0 number of bytes written in the file
+ * @retval 1  in case the students where successfully read
  ******************************************************************************/
 int student_read (FILE *fp)
 {

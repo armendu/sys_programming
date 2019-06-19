@@ -7,7 +7,7 @@
  * @brief Implements functions for processing of the command line options
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
- * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
+ * @date   $Date: 19 May 19, 22:48:08 WEST 2019 $
  */
 
 #include <stdio.h>
@@ -18,6 +18,11 @@
 
 #include "opt_proc.h"
 
+/***************************************************************************/ /** 
+ * @brief Returns the synopsis
+ *
+ * @param[in] input app_name
+ ******************************************************************************/
 void usage (const char *app_name)
 {
   printf ("\nSYNOPSIS\n");
@@ -28,9 +33,18 @@ void usage (const char *app_name)
   printf ("\t -l,          (optional) list all strings stored in the file\n");
 }
 
+/***************************************************************************/ /** 
+ * @brief Returns the number of characters in a given string
+ *
+ * @param[in]     argc    - no. of arguments
+ * @param[in]     argv    - argument value
+ * @param[in,out] f_name  - the file name
+ *
+ * @retval char respresenting the mode
+ ******************************************************************************/
 char set_mode(int argc, char **argv, char** f_name)
 {
-	int  f_set	= 0;
+	int  f_set	=  0 ;
   char mode 	= 'i';
 
   /* Check no. of arguments */

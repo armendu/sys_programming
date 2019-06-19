@@ -2,12 +2,12 @@
  * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
  * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
- * @file  main.c
+ * @file  s_manage.h
  *
- * @brief Implements the main function
+ * @brief Provides functions for managing the student structure
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
- * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
+ * @date   $Date: 20 May 19, 22:40:43 WEST 2019 $
  */
 
 #ifndef _S_MANAGE_H

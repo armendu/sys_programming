@@ -2,9 +2,9 @@
  * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
  * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
- * @file  main.c
+ * @file  cmd_modes.h
  *
- * @brief Implements the main function
+ * @brief Provides functions for the command modes that the program uses
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $

@@ -7,7 +7,7 @@
  * @brief Defines a student structure
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
- * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
+ * @date   $Date: 19 May 19, 19:20:12 WEST 2019 $
  */
 
 #ifndef _STUDENT_H

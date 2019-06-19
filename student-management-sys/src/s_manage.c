@@ -2,12 +2,12 @@
  * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
  * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
- * @file  main.c
+ * @file  s_manage.c
  *
- * @brief Implements the main function
+ * @brief Implements functions for managing the student structure
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
- * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
+ * @date   $Date: 19 May 19, 23:00:29 WEST 2019 $
  */
 
 #include <stdlib.h>
@@ -17,6 +17,11 @@
 #include "s_manage.h"
 #include "f_ser.h"
 
+/***************************************************************************/ /** 
+ * @brief Start prompting the user for getting the student info
+ *
+ * @param[in,out] s - the student struct where the data will be stored
+ ******************************************************************************/
 void get_student_info(student_t *s)
 {
   char firstName  [FIRSTNAME_LENGTH];
@@ -75,6 +80,11 @@ void get_student_info(student_t *s)
   return;
 }
 
+/***************************************************************************/ /** 
+ * @brief Gets the no. of students in a file
+ *
+ * @param[in,out] s - the student struct where the data will be stored
+ ******************************************************************************/
 int get_no_students(FILE *fp)
 {
   int status = 0;

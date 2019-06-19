@@ -1,13 +1,13 @@
-/** 
- * Copyright (C) 2003-2019 Dipl.Ing. Dr. techn. Idriz Smaili. All rights reserved
- * Siebenbuergerstrasse 16-26/26/17, A--1220 Wien, Austria. smaili.idriz@gmail.com
+ /**
+ * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
+ * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
  * @file  f_ser.h
  *
- * @brief Provides functions for the string file serialization
+ * @brief Provides functions for the student file serialization
  * 
- * @author (IS) Dr.techn. Dipl.-Ing. Idriz Smaili (smaili.idriz@gmail.com)
- * @date   $Date: Fri Apr 20, 15:27:59 WEST 2019 $
+ * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
+ * @date   $Date: 19 May 19, 18:02:25 WEST 2019 $
  */
 
 #ifndef _F_SER_H_

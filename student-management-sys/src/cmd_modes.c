@@ -2,12 +2,12 @@
  * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
  * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
- * @file  main.c
+ * @file  cmd_modes.c
  *
- * @brief Implements the main function
+ * @brief Implements functions for the command modes that the program uses
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
- * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $
+ * @date   $Date: 19 May 19, 18:21:05 WEST 2019 $
  */
 
 #include <stdio.h>
@@ -27,6 +27,15 @@ void enter_listing_mode     (FILE *fp);
 #include "s_manage.h"
 #include "f_ser.h"
 
+/***************************************************************************/ /** 
+ * @brief Starts one of the command line modes
+ *
+ * Interactive, where both append and list can be called, and
+ * Non-Interactive, where the mode is chosen beforehand.
+ *
+ * @param[in,out] fp - file pointer
+ * @param[in] mode - the mode speicified as an argument
+ ******************************************************************************/
 void start_cmd_mode(FILE *fp, char mode)
 {
   switch (mode)
@@ -45,6 +54,14 @@ void start_cmd_mode(FILE *fp, char mode)
 	}
 }
 
+/***************************************************************************/ /** 
+ * @brief Starts the interactive mode
+ *
+ * A user can write his command (append, list, or quit) and the
+ * program executes the next action based on that input
+ *
+ * @param[in,out] fp - file pointer
+ ******************************************************************************/
 void enter_interactive_mode(FILE *fp)
 {
   char input[50];
@@ -81,6 +98,15 @@ void enter_interactive_mode(FILE *fp)
   }
 }
 
+/***************************************************************************/ /** 
+ * @brief Starts the append mode
+ *
+ * A subset of the non-interactive mode where the user is
+ * asked to write the information of the next student that
+ * is going to be registered.
+ *
+ * @param[in,out] fp - file pointer
+ ******************************************************************************/
 void enter_append_mode(FILE *fp)
 {
 	student_t student;
@@ -93,6 +119,14 @@ void enter_append_mode(FILE *fp)
   printf("\nSuccessfully wrote the information to file.");
 }
 
+/***************************************************************************/ /** 
+ * @brief Starts the lisiting mode
+ *
+ * A subset of the non-interactive mode where the program
+ * shows the user all the registered students 
+ *
+ * @param[in,out] fp - file pointer
+ ******************************************************************************/
 void enter_listing_mode(FILE *fp)
 {
   /* reset the file pointer at the file begin  */
