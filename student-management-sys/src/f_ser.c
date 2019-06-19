@@ -1,4 +1,4 @@
- /**
+/**
  * Copyright (C) 2019 Bsc. Armend Ukehaxhaj. All rights reserved
  * Rr. Agim Ramadani pn., Prishtine, Kosovo. armendd.u@hotmail.com
  *
@@ -14,13 +14,15 @@
 #include <malloc.h>
 #include <unistd.h>
 
+int get_no_students(FILE *fp);
+
 #include "f_ser.h"
 #include "student.h"
 
-/***************************************************************************/ /** 
+/***************************************************************************/ /**
  * @brief Returns the number of characters in a given string
  *
- * @param[in] input string
+ * @param[in] str - the input string
  *
  * @retval number of characters
  ******************************************************************************/
@@ -49,12 +51,24 @@ int student_write(FILE *fp, student_t student)
 {
   int status = 0;
 
-  status = (int) fwrite (&student, sizeof(struct student_t), (size_t) 1, fp);
+  int nr_students = get_no_students(fp);
 
-  if (status == 0)
+  if (nr_students < MAX_NO_STUDENTS)
   {
-    printf ("\nAn error occurred while writing to file.");
+    status = (int)fwrite(&student, sizeof(struct student_t), (size_t)1, fp);
+
+    if (status == 0)
+    {
+      printf("\nAn error occurred while writing to file.");
+    }
   }
+  else
+  {
+    printf("\nThe maximum number of students are registered.");
+    return 0;
+  }
+
+  printf("\nThe no. of students is: '%d'.", nr_students + 1);
 
   return status;
 }
@@ -67,20 +81,20 @@ int student_write(FILE *fp, student_t student)
  * @retval 0  in case an error was occured
  * @retval 1  in case the students where successfully read
  ******************************************************************************/
-int student_read (FILE *fp)
+int student_read(FILE *fp)
 {
-  struct student_t student;
   int status = 0;
+  struct student_t student;
 
-  while((status = fread (&student, (size_t) sizeof(struct student_t), (size_t) 1, fp)))
+  while ((status = fread(&student, (size_t)sizeof(struct student_t), (size_t)1, fp)))
   {
     if (status == 0)
     {
-      printf ("\nError reading from file");
+      printf("\nError reading from file");
       return 0;
     }
-  
-    printf("\n\nFirstname:    \t%s", student.firstname);
+
+    printf("\n\nFirstname:    \t\t%s", student.firstname);
     printf("\nLastname:       \t%s", student.lastname);
     printf("\nIndex number:   \t%s", student.indexNumber);
     printf("\nAge:            \t%d", student.age);
@@ -88,4 +102,33 @@ int student_read (FILE *fp)
   }
 
   return 1;
+}
+
+/***************************************************************************/ /** 
+ * @brief Gets the no. of students in a file
+ *
+ * @param[in,out] s - the student struct where the data will be stored
+ * 
+ * @retval  0  in case there are no students
+ * @retval >0  in case there are more students registered
+ ******************************************************************************/
+int get_no_students(FILE *fp)
+{
+  int status = 0;
+  int no_of_students = 0;
+
+  struct student_t student;
+
+  while ((status = fread(&student, (size_t)sizeof(struct student_t), (size_t)1, fp)))
+  {
+    if (status == 0)
+    {
+      printf("\nError reading from file");
+      return status;
+    }
+
+    no_of_students = no_of_students + 1;
+  }
+
+  return no_of_students;
 }

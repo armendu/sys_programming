@@ -21,9 +21,9 @@
 /***************************************************************************/ /** 
  * @brief Returns the synopsis
  *
- * @param[in] input app_name
+ * @param[in] app_name - the app name
  ******************************************************************************/
-void usage (const char *app_name)
+void usage()
 {
   printf ("\nSYNOPSIS\n");
   printf ("\nstudent_management_sys [OPTION] ... \n");
@@ -78,7 +78,7 @@ char set_mode(int argc, char **argv, char** f_name)
 	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");
-		usage(argv[0]);
+		usage();
 		return 0;
 	}
 

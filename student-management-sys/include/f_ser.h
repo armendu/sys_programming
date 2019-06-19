@@ -13,12 +13,13 @@
 #ifndef _F_SER_H_
 #define _F_SER_H 1_
 
+#define MAX_NO_STUDENTS 40
+
 #include <stdio.h>
 #include "student.h"
 
 int str_len       (          const char *str);
 int student_write (FILE *fp, student_t   s);
 int student_read  (FILE *fp);
-int get_no_bytes  (FILE *fp);
 
 #endif /* _F_SER_H */

@@ -4,7 +4,8 @@
  *
  * @file  cmd_modes.h
  *
- * @brief Provides functions for the command modes that the program uses
+ * @brief Provides functions for the command modes that the program
+ * uses
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 19 May 19, 18:20:52 WEST 2019 $

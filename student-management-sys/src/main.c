@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	/* open a file */
 	printf("\nThe file '%s' is opening ...\n", f_name);
 
-	if ((fp = fopen(f_name, "a+")) == NULL)
+	if ((fp = fopen(f_name, "ab+")) == NULL)
 	{
 		printf("\nError opening the file: '%s' [Error string: '%s']",
 					 f_name, strerror(errno));

@@ -10,11 +10,11 @@
  * @date   $Date: 20 May 19, 22:40:07 WEST 2019 $
  */
 
-#ifndef _OPT_PROC__H
-#define _OPT_PROC__H 1_
+#ifndef _OPT_PROC_H_
+#define _OPT_PROC_H 1_
 
-void usage        (const char *app_name);
-char set_mode     (int argc, char **argv, char** f_name);
+void usage        ();
+char set_mode     (int argc   , char **argv, char** f_name);
 void handle_sigint(int sig_num);
 
-#endif /* _OPT_PROC__H */
+#endif /* _OPT_PROC_H */

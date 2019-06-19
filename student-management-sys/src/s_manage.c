@@ -24,11 +24,11 @@
  ******************************************************************************/
 void get_student_info(student_t *s)
 {
-  char firstName  [FIRSTNAME_LENGTH];
-  char lastName   [LASTNAME_LENGTH];
-  char indexNumber[INDEX_LENGTH];
-  char age        [10];
-  char address    [ADDRESS_LENGTH];
+  char firstName    [FIRSTNAME_LENGTH];
+  char lastName     [LASTNAME_LENGTH];
+  char indexNumber  [INDEX_LENGTH];
+  char age          [10];
+  char address      [ADDRESS_LENGTH];
 
   int s_len = 0;
 
@@ -78,29 +78,4 @@ void get_student_info(student_t *s)
   }
 
   return;
-}
-
-/***************************************************************************/ /** 
- * @brief Gets the no. of students in a file
- *
- * @param[in,out] s - the student struct where the data will be stored
- ******************************************************************************/
-int get_no_students(FILE *fp)
-{
-  int status = 0;
-  int internal_status = 0;
-  student_t student;
-
-    while( (internal_status = fread (&student, (size_t) sizeof(student), (size_t) 1, fp) ) )
-    {
-        if (internal_status == 0)
-        {
-            printf ("\nError reading from file");
-            return internal_status;
-        }
-        
-        status = internal_status;
-    }
-
-    return status;
 }
