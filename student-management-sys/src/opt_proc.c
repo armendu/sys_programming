@@ -20,8 +20,6 @@
 
 /***************************************************************************/ /** 
  * @brief Returns the synopsis
- *
- * @param[in] app_name - the app name
  ******************************************************************************/
 void usage()
 {
@@ -85,6 +83,11 @@ char set_mode(int argc, char **argv, char** f_name)
   return mode;
 }
 
+/***************************************************************************/ /** 
+ * @brief Called when user presses CTRL+C and terminates any open operation
+ *
+ * @param[in] sig_num - the signal
+ ******************************************************************************/
 void handle_sigint(int sig_num)
 {
   signal(SIGINT, handle_sigint);

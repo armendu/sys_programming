@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 	FILE *fp 			= NULL;
 	char *f_name 	= NULL;
 	
+	/* set the mode and retrieve the file name */
 	char mode = set_mode(argc, argv, &f_name);
 	
 	if (mode == 0 || f_name == NULL)

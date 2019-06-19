@@ -105,9 +105,9 @@ int student_read(FILE *fp)
 }
 
 /***************************************************************************/ /** 
- * @brief Gets the no. of students in a file
+ * @brief Returns the no. of students in a file
  *
- * @param[in,out] s - the student struct where the data will be stored
+ * @param[in,out] fp - the file pointer
  * 
  * @retval  0  in case there are no students
  * @retval >0  in case there are more students registered
