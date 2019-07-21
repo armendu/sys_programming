@@ -19,7 +19,7 @@
 #include "student.h"
 
 int str_len       (          const char *str);
-int student_write (FILE *fp, student_t   s);
+int student_write (FILE *fp, const student_t   s);
 int student_read  (FILE *fp);
 
 #endif /* _F_SER_H */

@@ -47,7 +47,7 @@ int str_len(const char *str)
  * @retval 0  in case an error was occured
  * @retval >0 number of bytes written in the file
  ******************************************************************************/
-int student_write(FILE *fp, student_t student)
+int student_write(FILE *fp, const student_t student)
 {
   int status = 0;
 
