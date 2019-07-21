@@ -47,8 +47,8 @@ all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/client $(EXE_DIR)/server
 $(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o 
 	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o -o $(EXE_DIR)/client
 
-$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o 
-	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o -o $(EXE_DIR)/server
+$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o
+	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o -o $(EXE_DIR)/server
 
 $(OBJ_DIR)/client.o: $(SRC_DIR)/client.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/client.o $(SRC_DIR)/client.c 
@@ -67,6 +67,9 @@ $(OBJ_DIR)/msg_queue.o: $(SRC_DIR)/msg_queue.c $(INCLUDE_DIR)/msg_queue.h
 
 $(OBJ_DIR)/nm_pipe.o: $(SRC_DIR)/nm_pipe.c $(INCLUDE_DIR)/nm_pipe.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/nm_pipe.o $(SRC_DIR)/nm_pipe.c
+
+$(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/opt_proc.o $(SRC_DIR)/opt_proc.c
 
 dox:
 	mkdir -p $(DOX_DIR)

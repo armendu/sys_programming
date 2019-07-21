@@ -28,7 +28,7 @@
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
-*.so.*
+*.so.**
 *.dylib
 
 # Executables
@@ -56,3 +56,4 @@ dkms.conf
 output/
 doc/html/
 doc/latex/
+.idea/
