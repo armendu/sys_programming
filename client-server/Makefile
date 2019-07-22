@@ -48,7 +48,7 @@ $(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe
 	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o -o $(EXE_DIR)/client
 
 $(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o
-	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o -o $(EXE_DIR)/server
+	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o -lpthread -lrt -o $(EXE_DIR)/server
 
 $(OBJ_DIR)/client.o: $(SRC_DIR)/client.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/client.o $(SRC_DIR)/client.c 

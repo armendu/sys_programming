@@ -32,7 +32,6 @@ typedef struct _nm_pipe
 {
   int       nmp_id;
   nmp_elm_t elm;
-  
 } nm_pipe_t;
 
 int  nmp_init  (/*@out@*/ nm_pipe_t *const nmp_obj, const char *nmp_name);
