@@ -12,4 +12,13 @@
 #ifndef _MSG_QUEUE__H
 #define _MSG_QUEUE__H 1
 
+#define MSQ_LEN 30
+
+typedef struct _msq_elm
+{
+    int     p_id;           /* client's process id              */
+    int     len;            /* length in bytes of the msg       */
+    char    msg[MSQ_LEN];   /* the message, i.e. pipe's name    */
+} msq_elm_t;
+
 #endif /* _MSG_QUEUE__H */

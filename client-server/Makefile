@@ -18,7 +18,7 @@ INCLUDE_DIR = ./include
 ####################################################################
 # Flag Definitions                                                 #
 ####################################################################
-FLAGS = -Wall -D_XOPEN_SOURCE -D_SVID_SOURCE -c -ansi -g
+FLAGS = -Wall -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -c -ansi -g
 # SPLINTFLAGS = +standard -skipposixheaders -mustfreeonly -likelybool -temptrans -usedef
 
 SPLINTFLAGS = +posixlib +standard -mustfreeonly -likelybool \
@@ -44,11 +44,11 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/client $(EXE_DIR)/server 
 
-$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o 
-	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o -o $(EXE_DIR)/client
+$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/f_ser.o 
+	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/f_ser.o -lrt -o $(EXE_DIR)/client
 
 $(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o
-	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o -lpthread -lrt -o $(EXE_DIR)/server
+	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o -lrt -o $(EXE_DIR)/server
 
 $(OBJ_DIR)/client.o: $(SRC_DIR)/client.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/client.o $(SRC_DIR)/client.c 
@@ -70,6 +70,9 @@ $(OBJ_DIR)/nm_pipe.o: $(SRC_DIR)/nm_pipe.c $(INCLUDE_DIR)/nm_pipe.h
 
 $(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/opt_proc.o $(SRC_DIR)/opt_proc.c
+	
+$(OBJ_DIR)/f_ser.o: $(SRC_DIR)/f_ser.c $(INCLUDE_DIR)/f_ser.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/f_ser.o $(SRC_DIR)/f_ser.c
 
 dox:
 	mkdir -p $(DOX_DIR)

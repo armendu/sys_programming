@@ -9,6 +9,7 @@
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:36$
  */
+
 #ifndef _SH_SEM__H
 #define _SH_SEM__H 1
 

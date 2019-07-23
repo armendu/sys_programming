@@ -4,133 +4,76 @@
  *
  * @file  server.c
  *
- * @brief 
+ * @brief Implements the functionality for the server
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:34$
  */
 
-#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 #include <mqueue.h>
-#include <fcntl.h>
-#include <sys/stat.h>
+#include <time.h>
 
-#define EXIT_FAILURE -1
-#define EXIT_SUCCESS  0
-#define STDOUT_FILENO 1
+#include "msg_queue.h"
 
-#include "opt_proc.h"
-
+#define MAX_MSG 10
 #define MY_MQ_NAME "/my_mq"
-
-pthread_t thread1;
-pthread_t thread2;
 
 static struct mq_attr my_mq_attr;
 static mqd_t my_mq;
+static msq_elm_t element;
 
-static unsigned int counter;
+void sig_handler(int signum);
 
-void thread1_main(void);
+int main()
+{
+  signal(SIGINT, sig_handler);
 
-void thread2_main(void);
+  int status;
+
+  my_mq_attr.mq_maxmsg = MAX_MSG;
+  my_mq_attr.mq_msgsize = sizeof(element.len);
+
+  my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, &my_mq_attr);
+
+  /* unsigned int exec_period_usecs = 10000;  */
+  char *buffer = calloc (my_mq_attr.mq_msgsize, 1);
+  unsigned int priority = 0;
+
+  while (1)
+  {
+    printf("Waiting for a message...\n");
+    status = mq_receive(my_mq, buffer, my_mq_attr.mq_msgsize, &priority);
+
+    if (status == -1)
+    {
+      printf ("Failed to receive message\n");
+    }
+    else
+    {
+      printf("Received the following message: %s\n", buffer);
+    }
+
+    /* nanosleep(exec_period_usecs); */
+    nanosleep((const struct timespec[]){{5, 0L}}, NULL);
+  }
+
+  return 0;
+}
 
 void sig_handler(int signum)
 {
-  if (signum != SIGINT) {
+  if (signum != SIGINT)
+  {
     printf("Received invalid signum = %d in sig_handler()\n", signum);
   }
 
   printf("Received SIGINT. Exiting Application\n");
 
-  pthread_cancel(thread1);
-  pthread_cancel(thread2);
-
   mq_close(my_mq);
   mq_unlink(MY_MQ_NAME);
 
   exit(0);
-}
-
-int main(void)
-{
-  pthread_attr_t attr;
-  int status;
-
-  signal(SIGINT, sig_handler);
-
-  counter = 0;
-
-  my_mq_attr.mq_maxmsg = 10;
-  my_mq_attr.mq_msgsize = sizeof(counter);
-
-  my_mq = mq_open(MY_MQ_NAME, \
-                    O_CREAT | O_RDWR | O_NONBLOCK, \
-                    0666, \
-                    &my_mq_attr);
-
-
-  pthread_attr_init(&attr);
-  pthread_attr_setstacksize(&attr, 1024 * 1024);
-
-  printf("Creating thread1\n");
-  status = pthread_create(&thread1, &attr, (void *) &thread1_main, NULL);
-  if (status != 0) {
-    printf("Failed to create thread1 with status = %d\n", status);
-  }
-
-  printf("Creating thread2\n");
-  status = pthread_create(&thread2, &attr, (void *) &thread2_main, NULL);
-  if (status != 0) {
-    printf("Failed to create thread2 with status = %d\n", status);
-  }
-
-  pthread_join(thread1, NULL);
-  pthread_join(thread2, NULL);
-
-  sig_handler(SIGINT);
-
-  return 0;
-}
-
-void thread1_main(void)
-{
-  unsigned int exec_period_usecs;
-  int status;
-
-  exec_period_usecs = 1000000; /*in micro-seconds*/
-
-  printf("Thread 1 started. Execution period = %d uSecs\n", \
-                                           exec_period_usecs);
-  while (1) {
-    status = mq_send(my_mq, (const char *) &counter, sizeof(counter), 1);
-    usleep(exec_period_usecs);
-  }
-}
-
-
-void thread2_main(void)
-{
-  unsigned int exec_period_usecs;
-  int status;
-  int recv_counter;
-
-  exec_period_usecs = 10000; /*in micro-seconds*/
-
-  printf("Thread 2 started. Execution period = %d uSecs\n", \
-                                           exec_period_usecs);
-
-
-    status = mq_receive(my_mq, (char *) &recv_counter, \
-                            sizeof(recv_counter), NULL);
-
-    if (status > 0) {
-      printf("RECVd MSG in THRD_2: %d\n", recv_counter);
-      counter += 1;
-    }
-
-    usleep(exec_period_usecs);
-
 }
