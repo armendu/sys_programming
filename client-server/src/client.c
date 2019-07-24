@@ -22,11 +22,14 @@
 
 #include "msg_queue.h"
 
+/* Define constants */
 #define SERVER_QUEUE_NAME "/server-mq"
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      256
 #define MSG_BUFFER_SIZE   MAX_MSG_SIZE + 10
+
+void sig_handler(int signum);
 
 mqd_t mq_server;
 
