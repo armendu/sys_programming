@@ -15,15 +15,15 @@
 #include <signal.h>
 #include <mqueue.h>
 #include <time.h>
+#include <errno.h>
 
 #include "msg_queue.h"
 
 #define MAX_MSG 10
-#define MY_MQ_NAME "/my_mq"
+#define MY_MQ_NAME "/my_mq1"
 
 static struct mq_attr my_mq_attr;
 static mqd_t my_mq;
-static msq_elm_t element;
 
 void sig_handler(int signum);
 
@@ -32,32 +32,34 @@ int main()
   signal(SIGINT, sig_handler);
 
   int status;
+  msq_elm_t element;
+  void *buffer;
 
-  my_mq_attr.mq_maxmsg = MAX_MSG;
-  my_mq_attr.mq_msgsize = sizeof(element.len);
+  my_mq_attr.mq_maxmsg = sizeof(msq_elm_t);
+  my_mq_attr.mq_msgsize = sizeof(msq_elm_t);
+
+  buffer = malloc(my_mq_attr.mq_msgsize);
 
   my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, &my_mq_attr);
-
-  /* unsigned int exec_period_usecs = 10000;  */
-  char *buffer = calloc (my_mq_attr.mq_msgsize, 1);
   unsigned int priority = 0;
 
   while (1)
   {
-    printf("Waiting for a message...\n");
-    status = mq_receive(my_mq, buffer, my_mq_attr.mq_msgsize, &priority);
+    /*printf("Waiting for a message...\n");*/
+    status = mq_receive(my_mq, (char *) &buffer, sizeof(buffer), &priority);
 
     if (status == -1)
-    {
-      printf ("Failed to receive message\n");
+    { 
+      printf("Value of errno: %d\n", errno);
     }
     else
     {
-      printf("Received the following message: %s\n", buffer);
+      printf("Received the following message: \n");
+      break;
     }
 
-    /* nanosleep(exec_period_usecs); */
-    nanosleep((const struct timespec[]){{5, 0L}}, NULL);
+    /* nanosleep(exec_period_usecs); 
+    nanosleep((const struct timespec[]){{1, 0L}}, NULL);*/
   }
 
   return 0;

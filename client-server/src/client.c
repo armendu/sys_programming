@@ -14,17 +14,17 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
-#include <mqueue.h>
+#include <mqueue.h>      
+#include <errno.h>
 #include <unistd.h>
 
 #include "msg_queue.h"
 #include "f_ser.h"
 
-#define MY_MQ_NAME "/my_mq"
+#define MY_MQ_NAME "/my_mq1"
 
 static struct mq_attr my_mq_attr;
 static mqd_t my_mq;
-static msq_elm_t element;
 
 void sig_handler(int signum);
 
@@ -33,15 +33,19 @@ int main()
   signal(SIGINT, sig_handler);
 
   int status;
-  char message[element.len];
+  /*pid_t pid = getpid();*/
 
-  my_mq_attr.mq_msgsize = sizeof(element.len);
+  msq_elm_t element = { .msg = "/tmp/nmpiped_100", .len = 123, .p_id = 456 };
+  /*element.msg[element.len] = ;*/
+/*
+  my_mq_attr.mq_maxmsg = sizeof(msq_elm_t);
+  my_mq_attr.mq_msgsize = sizeof(msq_elm_t);
+  */
 
-  my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, &my_mq_attr);
 
-  printf("Client has started. Execution period = %d seconds\n", 5);
+  my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, NULL);
 
-  printf("\nPlease write the message: ");
+  printf("Client has started\n");
 
   /* Read from the message from the file here */
 
@@ -49,15 +53,18 @@ int main()
   {
     /* Send "HELLO" as a message with priority 10, then close the queue.
       Note the size is 6 to include the null byte '\0'. */
-    status = mq_send(my_mq, (const char *)&message, sizeof(message) + 1, 0);
+    status = mq_send(my_mq, (const char *) &element, sizeof(element), 0);
 
+    printf("Value of errno: %d\n ", errno);
+    
     printf("Status is %d\n", status);
     if (status == 0)
     {
-      printf("Sent message, now sleeping...");
+      printf("Sent message, now sleeping...\n");
+      break;
     }
 
-    nanosleep((const struct timespec[]){{5, 0L}}, NULL);
+    nanosleep((const struct timespec[]){{1, 0L}}, NULL);
   }
 
   return 0;
