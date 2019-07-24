@@ -12,62 +12,48 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <time.h>
-#include <mqueue.h>      
-#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <mqueue.h>
+#include <signal.h>
 
 #include "msg_queue.h"
-#include "f_ser.h"
 
-#define MY_MQ_NAME "/my_mq1"
+#define SERVER_QUEUE_NAME "/server-mq"
+#define QUEUE_PERMISSIONS 0660
+#define MAX_MESSAGES      10
+#define MAX_MSG_SIZE      256
+#define MSG_BUFFER_SIZE   MAX_MSG_SIZE + 10
 
-static struct mq_attr my_mq_attr;
-static mqd_t my_mq;
+mqd_t mq_server;
 
-void sig_handler(int signum);
-
-int main()
+int main(int argc, char **argv)
 {
   signal(SIGINT, sig_handler);
+  int p_id = getpid();
+  msq_elm_t message = { .p_id = p_id };
 
-  int status;
-  /*pid_t pid = getpid();*/
+  sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
+  message.len = strlen(message.msg);
 
-  msq_elm_t element = { .msg = "/tmp/nmpiped_100", .len = 123, .p_id = 456 };
-  /*element.msg[element.len] = ;*/
-/*
-  my_mq_attr.mq_maxmsg = sizeof(msq_elm_t);
-  my_mq_attr.mq_msgsize = sizeof(msq_elm_t);
-  */
-
-
-  my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, NULL);
-
-  printf("Client has started\n");
-
-  /* Read from the message from the file here */
-
-  while (1)
+  if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
   {
-    /* Send "HELLO" as a message with priority 10, then close the queue.
-      Note the size is 6 to include the null byte '\0'. */
-    status = mq_send(my_mq, (const char *) &element, sizeof(element), 0);
-
-    printf("Value of errno: %d\n ", errno);
-    
-    printf("Status is %d\n", status);
-    if (status == 0)
-    {
-      printf("Sent message, now sleeping...\n");
-      break;
-    }
-
-    nanosleep((const struct timespec[]){{1, 0L}}, NULL);
+    perror("Client: mq_open (server)");
+    exit(1);
   }
 
-  return 0;
+  if (mq_send(mq_server, (const char *) &message, sizeof(message) + 1,
+              0) == -1)
+  {
+    perror("Client: Not able to send message to server");
+  }
+
+  printf("Sent message: '%s'\n", message.msg);
+
+  exit(0);
 }
 
 void sig_handler(int signum)
@@ -78,9 +64,8 @@ void sig_handler(int signum)
   }
 
   printf("Received SIGINT. Exiting Application\n");
-
-  mq_close(my_mq);
-  mq_unlink(MY_MQ_NAME);
+  mq_close(mq_server);
+  mq_unlink(SERVER_QUEUE_NAME);
 
   exit(0);
 }

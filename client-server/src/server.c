@@ -10,59 +10,59 @@
  * @date   $Date: Sun, Jul 21, 2019 23:34$
  */
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <mqueue.h>
-#include <time.h>
-#include <errno.h>
+#include <signal.h>
 
 #include "msg_queue.h"
 
-#define MAX_MSG 10
-#define MY_MQ_NAME "/my_mq1"
+#define SERVER_QUEUE_NAME "/server-mq"
+#define QUEUE_PERMISSIONS 0660
+#define MAX_MESSAGES      10
+#define MAX_MSG_SIZE      256
+#define MSG_BUFFER_SIZE   MAX_MSG_SIZE + 10
 
-static struct mq_attr my_mq_attr;
-static mqd_t my_mq;
+static mqd_t mq_server;
 
-void sig_handler(int signum);
-
-int main()
+int main(int argc, char **argv)
 {
   signal(SIGINT, sig_handler);
+  printf("Server is running..\n");
 
-  int status;
+  /* Set attributes for server queue */
+  struct mq_attr attr;
+  attr.mq_maxmsg  = MAX_MESSAGES;
+  attr.mq_msgsize = MAX_MSG_SIZE;
+  attr.mq_flags   = 0;
+  attr.mq_curmsgs = 0;
+
+  /* Open message queue */
+  if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_RDONLY | O_CREAT,
+                    QUEUE_PERMISSIONS, &attr)) == -1)
+  {
+    perror("Server: mq_open (server)");
+    exit(1);
+  }
+
   msq_elm_t element;
-  void *buffer;
-
-  my_mq_attr.mq_maxmsg = sizeof(msq_elm_t);
-  my_mq_attr.mq_msgsize = sizeof(msq_elm_t);
-
-  buffer = malloc(my_mq_attr.mq_msgsize);
-
-  my_mq = mq_open(MY_MQ_NAME, O_CREAT | O_RDWR, 0666, &my_mq_attr);
-  unsigned int priority = 0;
 
   while (1)
   {
-    /*printf("Waiting for a message...\n");*/
-    status = mq_receive(my_mq, (char *) &buffer, sizeof(buffer), &priority);
-
-    if (status == -1)
-    { 
-      printf("Value of errno: %d\n", errno);
-    }
-    else
+    /* Receive message in message queue */
+    if (mq_receive(mq_server, (char *) &element, MSG_BUFFER_SIZE,
+                    NULL) == -1)
     {
-      printf("Received the following message: \n");
-      break;
+      perror("Server: mq_receive");
+      exit(1);
     }
 
-    /* nanosleep(exec_period_usecs); 
-    nanosleep((const struct timespec[]){{1, 0L}}, NULL);*/
+    printf("Received Message from client: %s\n", element.msg);
   }
-
-  return 0;
 }
 
 void sig_handler(int signum)
@@ -73,9 +73,8 @@ void sig_handler(int signum)
   }
 
   printf("Received SIGINT. Exiting Application\n");
-
-  mq_close(my_mq);
-  mq_unlink(MY_MQ_NAME);
+  mq_close(mq_server);
+  mq_unlink(SERVER_QUEUE_NAME);
 
   exit(0);
 }
