@@ -12,63 +12,24 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <mqueue.h>
-#include <signal.h>
 
 #include "msg_queue.h"
-
-/* Define constants */
-#define SERVER_QUEUE_NAME "/server-mq"
-#define QUEUE_PERMISSIONS 0660
-#define MAX_MESSAGES      10
-#define MAX_MSG_SIZE      256
-#define MSG_BUFFER_SIZE   MAX_MSG_SIZE + 10
-
-void sig_handler(int signum);
-
-mqd_t mq_server;
+#include "opt_proc.h"
 
 int main(int argc, char **argv)
 {
-  signal(SIGINT, sig_handler);
-  int p_id = getpid();
-  msq_elm_t message = { .p_id = p_id };
+  FILE *fp = NULL;
+  char *f_name 	= NULL;
+	
+	/* set the mode and retrieve the file name */
+	int n_secs = get_client_args(argc, argv, &f_name);
 
-  sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
-  message.len = strlen(message.msg);
-
-  if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
+  if (n_secs == -1)
   {
-    perror("Client: mq_open (server)");
-    exit(1);
+    return 0;
   }
 
-  if (mq_send(mq_server, (const char *) &message, sizeof(message) + 1,
-              0) == -1)
-  {
-    perror("Client: Not able to send message to server");
-  }
-
-  printf("Sent message: '%s'\n", message.msg);
-
-  exit(0);
-}
-
-void sig_handler(int signum)
-{
-  if (signum != SIGINT)
-  {
-    printf("Received invalid signum = %d in sig_handler()\n", signum);
-  }
-
-  printf("Received SIGINT. Exiting Application\n");
-  mq_close(mq_server);
-  mq_unlink(SERVER_QUEUE_NAME);
-
-  exit(0);
+  /* open_msg_queue(1);*/
+  open_client_mq(fp, n_secs);
+  return 0;
 }

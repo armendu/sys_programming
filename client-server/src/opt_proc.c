@@ -16,8 +16,9 @@
 #include <getopt.h>
 #include <signal.h>
 
-#include "opt_proc.h"
+#define ERROR_CODE -1 
 
+#include "opt_proc.h"
 
 /***************************************************************************/ /**
  * @brief Returns the synopsis
@@ -41,20 +42,50 @@ void usage()
  *
  * @retval char respresenting the mode
  ******************************************************************************/
-char set_mode(int argc, char **argv, char** f_name)
+int get_client_args(int argc, char **argv, char** f_name)
 {
-  return 0;
-}
+  int f_set 	= 0;
+	int s_set   = 0;
+  int n_secs 	= 0;
 
-/***************************************************************************/ /**
- * @brief Called when user presses CTRL+C and terminates any open operation
- *
- * @param[in] sig_num - the signal
- ******************************************************************************/
-void handle_sigint(int sig_num)
-{
-  signal(SIGINT, handle_sigint);
-  /* TODO: IMPROVE */
-  printf("\nShutting down...\n");
-  exit(-1);
+  /* Check no. of arguments */
+	if(argc < 5)
+	{
+		printf("Too few arguments provided. \n");
+		return ERROR_CODE;
+	}
+
+	int opt;
+	while ((opt = getopt(argc, argv, "f:t:")) != -1)
+	{
+		switch (opt)
+		{
+			case 'f':
+        f_set = opt;
+				*f_name = optarg;
+				break;
+			case 't':
+				s_set = opt;
+				n_secs = atoi(optarg);
+				break;
+			default:
+				return ERROR_CODE;
+		}
+	}
+	
+	if (f_set == 0)
+	{
+		printf("The option '-f' is mandatory\n");
+		usage();
+		return ERROR_CODE;
+	}
+
+	if (s_set == 0)
+	{
+		printf("The option '-s' is mandatory\n");
+		usage();
+		return ERROR_CODE;
+	}
+
+  return n_secs;
 }

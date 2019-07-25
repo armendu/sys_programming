@@ -13,8 +13,7 @@
 #ifndef _OPT_PROC__H
 #define _OPT_PROC__H 1
 
-void usage        ();
-char set_mode     (int argc   , char **argv, char** f_name);
-void handle_sigint(int sig_num);
+void  usage();
+int   get_client_args (int argc, char **argv, char** f_name);
 
 #endif /* _OPT_PROC__H */
