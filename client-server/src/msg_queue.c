@@ -67,32 +67,50 @@ int open_server_mq(const char *f_name)
 		else
 		{
 			printf("Received message from client: %s\n", message.msg);
-			/*
-			nm_pipe_t pipe;
-			pipe.elm.len = message.len;
-			strcpy(pipe.elm.msg, message.msg);
-			 */
-			
+
 			nm_pipe_t nmp_obj;
 
-			int result = nmp_init (&nmp_obj, message.msg);
+			/* Create pipe if it does not exist */
+			int result = nmp_init(&nmp_obj, message.msg);
+			printf("init result is %d\n", result);
 
 			if (result == -1)
 			{
-				printf("FAILED TO CREATE PIPE");
+				printf("Failed to create pipe\n");
+				return -1;
 			}
-			
-			int rcvresult = nmp_recv(&nmp_obj);
 
-			printf("Message in server: %s\n", nmp_obj.elm.msg);
+			pid_t pid;
+			pid = fork();
 
-			if (rcvresult == -1)
+			if (pid < 0)
 			{
-				printf("FAILED TO READ FROM PIPE");
+				perror("fork");
+				return -1;
+			}
+
+			if (pid == 0)
+			{
+				printf("Child process created...\n");
+
+				/* Receive information from pipe */
+				int rcvresult = nmp_recv(&nmp_obj);
+				printf("after receive result is %d\n", rcvresult);
+
+				printf("Message in server: %s\n", nmp_obj.elm.msg);
+
+				if (rcvresult == -1)
+				{
+					printf("FAILED TO READ FROM PIPE\n");
+				}
+				else
+				{
+					printf("SUCCESS");
+				}
 			}
 			else
 			{
-				printf("SUCCESS");
+				/* Parent process */
 			}
 		}
 	}
@@ -114,7 +132,7 @@ int open_client_mq(const char *f_name, int n_secs)
 
 	/* Create pipe if it does not exist */
 	nm_pipe_t nmp_obj;
-	int result = nmp_init (&nmp_obj, message.msg);
+	int result = nmp_init(&nmp_obj, message.msg);
 
 	if (nmp_obj.nmp_id == -1)
 	{
@@ -126,7 +144,7 @@ int open_client_mq(const char *f_name, int n_secs)
 		{
 			nmp_obj.elm.len = message.len;
 			strcpy(nmp_obj.elm.msg, message.msg);
-			
+
 			int result = nmp_send(&nmp_obj);
 
 			if (result == -1)
@@ -142,7 +160,7 @@ int open_client_mq(const char *f_name, int n_secs)
 		{
 			printf("PIPE Failed\n");
 		}
-	}	
+	}
 
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
 	{
