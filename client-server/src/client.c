@@ -18,7 +18,6 @@
 
 int main(int argc, char **argv)
 {
-  FILE *fp = NULL;
   char *f_name 	= NULL;
 	
 	/* set the mode and retrieve the file name */
@@ -30,6 +29,6 @@ int main(int argc, char **argv)
   }
 
   /* open_msg_queue(1);*/
-  open_client_mq(fp, n_secs);
+  open_client_mq(f_name, n_secs);
   return 0;
 }

@@ -21,6 +21,7 @@
 #include <signal.h>
 
 #include "msg_queue.h"
+#include "nm_pipe.h"
 
 /* Define constants */
 #define SERVER_QUEUE_NAME "/server-mq"
@@ -65,13 +66,40 @@ int open_server_mq(FILE *log_file)
 		else
 		{
 			printf("Received message from client: %s\n", message.msg);
+			/*
+			nm_pipe_t pipe;
+			pipe.elm.len = message.len;
+			strcpy(pipe.elm.msg, message.msg);
+			 */
+			
+			nm_pipe_t nmp_obj;
+
+			int result = nmp_init (&nmp_obj, message.msg);
+
+			if (result == -1)
+			{
+				printf("FAILED TO CREATE PIPE");
+			}
+			
+			int rcvresult = nmp_recv(&nmp_obj);
+
+			printf("Message in server: %s\n", nmp_obj.elm.msg);
+
+			if (rcvresult == -1)
+			{
+				printf("FAILED TO READ FROM PIPE");
+			}
+			else
+			{
+				printf("SUCCESS");
+			}
 		}
 	}
 
 	return 0;
 }
 
-int open_client_mq(FILE *msg_file, int n_secs)
+int open_client_mq(const char *f_name, int n_secs)
 {
 	printf("Client is running..\n");
 
@@ -79,10 +107,40 @@ int open_client_mq(FILE *msg_file, int n_secs)
 	msq_elm_t message;
 
 	message.p_id = p_id;
-	message.len = strlen(message.msg);
+	message.len = sizeof(message.msg);
 	sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
 
-	
+	/* Create pipe if it does not exist */
+	nm_pipe_t nmp_obj;
+	int result = nmp_init (&nmp_obj, message.msg);
+
+	if (nmp_obj.nmp_id == -1)
+	{
+		printf("PIPE was not created\n");
+	}
+	else
+	{
+		if (result == 0)
+		{
+			nmp_obj.elm.len = message.len;
+			strcpy(nmp_obj.elm.msg, message.msg);
+			
+			int result = nmp_send(&nmp_obj);
+
+			if (result == -1)
+			{
+				printf("Error in send\n");
+			}
+			else
+			{
+				printf("Success in send\n");
+			}
+		}
+		else
+		{
+			printf("PIPE Failed\n");
+		}
+	}	
 
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
 	{
