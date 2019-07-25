@@ -21,8 +21,7 @@ typedef struct _msq_elm
     char    msg[MSQ_LEN];   /* the message, i.e. pipe's name    */
 } msq_elm_t;
 
-int open_msg_queue(int   type);
-int open_server_mq(FILE *log_file);
+int open_server_mq(const char *f_name);
 int open_client_mq(const char *f_name, int n_secs);
 
 #endif /* _MSG_QUEUE__H */

@@ -21,16 +21,24 @@
 #include "opt_proc.h"
 
 /***************************************************************************/ /**
- * @brief Returns the synopsis
+ * @brief Returns the synopsis for server
  ******************************************************************************/
-void usage()
+void usage_server()
+{
+  printf ("\nSYNOPSIS\n");
+  printf ("\nstudent_management_sys [OPTION] ... \n");
+  printf ("\t -f arg,      (mandatory) the log file name\n");
+}
+
+/***************************************************************************/ /**
+ * @brief Returns the synopsis for client
+ ******************************************************************************/
+void usage_client()
 {
   printf ("\nSYNOPSIS\n");
   printf ("\nstudent_management_sys [OPTION] ... \n");
   printf ("\t -f arg,      (mandatory) the file name\n");
-  printf ("\t -a,          (optional) append a string to the file\n");
-  printf ("\t -i,          (optional) start the interactive mode\n");
-  printf ("\t -l,          (optional) list all strings stored in the file\n");
+  printf ("\t -t arg,      (mandatory) seconds\n");
 }
 
 /***************************************************************************/ /**
@@ -52,6 +60,7 @@ int get_client_args(int argc, char **argv, char** f_name)
 	if(argc < 5)
 	{
 		printf("Too few arguments provided. \n");
+		usage_client();
 		return ERROR_CODE;
 	}
 
@@ -69,6 +78,7 @@ int get_client_args(int argc, char **argv, char** f_name)
 				n_secs = atoi(optarg);
 				break;
 			default:
+				usage_client();
 				return ERROR_CODE;
 		}
 	}
@@ -76,16 +86,53 @@ int get_client_args(int argc, char **argv, char** f_name)
 	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");
-		usage();
+		usage_client();
 		return ERROR_CODE;
 	}
 
 	if (s_set == 0)
 	{
 		printf("The option '-s' is mandatory\n");
-		usage();
+		usage_client();
 		return ERROR_CODE;
 	}
 
   return n_secs;
+}
+
+int get_server_args(int argc, char **argv, char** f_name)
+{
+  int f_set = 0;
+
+  /* Check no. of arguments */
+	if(argc < 3)
+	{
+		printf("Too few arguments provided. \n");
+		usage_server();
+		return ERROR_CODE;
+	}
+
+	int opt;
+	while ((opt = getopt(argc, argv, "f:")) != -1)
+	{
+		switch (opt)
+		{
+			case 'f':
+        f_set = opt;
+				*f_name = optarg;
+				break;
+			default:
+				usage_server();
+				return ERROR_CODE;
+		}
+	}
+	
+	if (f_set == 0)
+	{
+		printf("The option '-f' is mandatory\n");
+		usage_server();
+		return ERROR_CODE;
+	}
+
+  return 0;
 }

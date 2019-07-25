@@ -34,8 +34,9 @@ void sig_handler(int signum);
 
 mqd_t mq_server;
 
-int open_server_mq(FILE *log_file)
+int open_server_mq(const char *f_name)
 {
+	signal(SIGINT, sig_handler);
 	printf("Server is running..\n");
 	msq_elm_t message;
 
@@ -101,6 +102,7 @@ int open_server_mq(FILE *log_file)
 
 int open_client_mq(const char *f_name, int n_secs)
 {
+	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");
 
 	int p_id = getpid();
@@ -157,74 +159,6 @@ int open_client_mq(const char *f_name, int n_secs)
 	{
 		printf("Sent message: '%s'\n", message.msg);
 	}
-	return 0;
-}
-
-int open_msg_queue(int type)
-{
-	signal(SIGINT, sig_handler);
-
-	msq_elm_t message;
-
-	if (type == 0)
-	{
-		printf("Server is running..\n");
-
-		/* Set attributes for server queue */
-		struct mq_attr attr;
-		attr.mq_maxmsg = MAX_MESSAGES;
-		attr.mq_msgsize = MAX_MSG_SIZE;
-		attr.mq_flags = 0;
-		attr.mq_curmsgs = 0;
-
-		/* Open message queue */
-		if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_RDONLY | O_CREAT,
-														 QUEUE_PERMISSIONS, &attr)) == -1)
-		{
-			perror("Server: mq_open (server)");
-			exit(1);
-		}
-
-		while (1)
-		{
-			/* Receive message in message queue */
-			if (mq_receive(mq_server, (char *)&message, MSG_BUFFER_SIZE,
-										 NULL) == -1)
-			{
-				perror("Server: mq_receive");
-				exit(1);
-			}
-
-			printf("Received message from client: %s\n", message.msg);
-		}
-	}
-	if (type == 1)
-	{
-		printf("Client is running..\n");
-
-		int p_id = getpid();
-
-		message.p_id = p_id;
-		message.len = strlen(message.msg);
-		sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
-
-		if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
-		{
-			perror("Client: mq_open (server)");
-			exit(1);
-		}
-
-		if (mq_send(mq_server, (const char *)&message, sizeof(message) + 1,
-								0) == -1)
-		{
-			perror("Not able to send message to server\n");
-		}
-		else
-		{
-			printf("Sent message: '%s'\n", message.msg);
-		}
-	}
-
 	return 0;
 }
 

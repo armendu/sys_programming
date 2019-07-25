@@ -14,12 +14,21 @@
 #include <stdio.h>
 
 #include "msg_queue.h"
+#include "opt_proc.h"
 
 int main(int argc, char **argv)
 {
-  FILE *fp = NULL;
-  /* open_msg_queue(0); */
-  open_server_mq(fp);
+  char *f_name 	= NULL;
+	
+	/* set the mode and retrieve the file name */
+	int result = get_server_args(argc, argv, &f_name);
+
+  if (result == -1)
+  {
+    return 0;
+  }
+
+  open_server_mq(f_name);
   
   return 0;
 }

@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  /* open_msg_queue(1);*/
   open_client_mq(f_name, n_secs);
+
   return 0;
 }
