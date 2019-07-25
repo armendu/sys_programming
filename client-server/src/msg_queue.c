@@ -96,19 +96,22 @@ int open_server_mq(const char *f_name)
 			{
 				printf("Child process created...\n");
 
-				/* Receive information from pipe */
-				int rcvresult = nmp_recv(&nmp_obj);
-				printf("after receive result is %d\n", rcvresult);
-
-				printf("Message in server: %s\n", nmp_obj.elm.msg);
-
-				if (rcvresult == -1)
+				while (1)
 				{
-					printf("FAILED TO READ FROM PIPE\n");
-				}
-				else
-				{
-					printf("SUCCESS");
+					/* Receive information from pipe */
+					int rcvresult = nmp_recv(&nmp_obj);
+					printf("after receive result is %d\n", rcvresult);
+
+					printf("Message in server: %s\n", nmp_obj.elm.msg);
+
+					if (rcvresult == -1)
+					{
+						printf("FAILED TO READ FROM PIPE\n");
+					}
+					else
+					{
+						printf("SUCCESS");
+					}
 				}
 			}
 			else
@@ -171,11 +174,8 @@ int open_client_mq(const char *f_name, int n_secs)
 		}
 
 		char buff[NMP_MSG_LEN];
-		while (1)
+		while (fgets(buff, NMP_MSG_LEN, fp) != NULL)
 		{
-			fgets(buff, NMP_MSG_LEN - 1, fp);
-			printf("3: %s\n", buff);
-
 			nmp_obj.elm.len = message.len;
 			strcpy(nmp_obj.elm.msg, buff);
 
@@ -188,13 +188,15 @@ int open_client_mq(const char *f_name, int n_secs)
 			{
 				return -1;
 			}
-			/* reset the file pointer at the file begin  */
-  		(void)fseek(fp, 0, SEEK_SET);
 
-			printf("Success sending message in pipe.\n");
+			printf("Success sending message in pipe. Now sleeping...\n");
 
-			nanosleep((const struct timespec[]){{5, 0L}}, NULL);
+			nanosleep((const struct timespec[]){{n_secs, 0L}}, NULL);
 		}
+
+		/* No more rows to send */
+		free(fp);
+		printf("File content sent successfully\n.");
 	}
 	return 0;
 }
