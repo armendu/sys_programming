@@ -39,7 +39,4 @@ void nmp_free  (/*@out@*/ nm_pipe_t *const nmp_obj);
 int  nmp_send  (/*@out@*/ nm_pipe_t *const nmp_obj);
 int  nmp_recv  (/*@out@*/ nm_pipe_t *const nmp_obj);
 
-
 #endif /* _NM_PIPE__H */
-
- 

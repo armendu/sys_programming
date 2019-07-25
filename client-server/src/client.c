@@ -25,10 +25,8 @@ int main(int argc, char **argv)
 
   if (n_secs == -1)
   {
-    return 0;
+    return -1;
   }
 
-  open_client_mq(f_name, n_secs);
-
-  return 0;
+  return open_client_mq(f_name, n_secs);
 }

@@ -25,10 +25,8 @@ int main(int argc, char **argv)
 
   if (result == -1)
   {
-    return 0;
+    return -1;
   }
 
-  open_server_mq(f_name);
-  
-  return 0;
+  return open_server_mq(f_name);
 }

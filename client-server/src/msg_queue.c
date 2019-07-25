@@ -19,9 +19,12 @@
 #include <sys/stat.h>
 #include <mqueue.h>
 #include <signal.h>
+#include <errno.h>
+#include <time.h>
 
 #include "msg_queue.h"
 #include "nm_pipe.h"
+#include "f_ser.h"
 
 /* Define constants */
 #define SERVER_QUEUE_NAME "/server-mq"
@@ -123,9 +126,11 @@ int open_client_mq(const char *f_name, int n_secs)
 	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");
 
+	/* Get process id and create message */
 	int p_id = getpid();
 	msq_elm_t message;
 
+	/* Set pipe name and message data */
 	message.p_id = p_id;
 	message.len = sizeof(message.msg);
 	sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
@@ -134,32 +139,9 @@ int open_client_mq(const char *f_name, int n_secs)
 	nm_pipe_t nmp_obj;
 	int result = nmp_init(&nmp_obj, message.msg);
 
-	if (nmp_obj.nmp_id == -1)
+	if (result == -1)
 	{
-		printf("PIPE was not created\n");
-	}
-	else
-	{
-		if (result == 0)
-		{
-			nmp_obj.elm.len = message.len;
-			strcpy(nmp_obj.elm.msg, message.msg);
-
-			int result = nmp_send(&nmp_obj);
-
-			if (result == -1)
-			{
-				printf("Error in send\n");
-			}
-			else
-			{
-				printf("Success in send\n");
-			}
-		}
-		else
-		{
-			printf("PIPE Failed\n");
-		}
+		return -1;
 	}
 
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
@@ -176,6 +158,43 @@ int open_client_mq(const char *f_name, int n_secs)
 	else
 	{
 		printf("Sent message: '%s'\n", message.msg);
+
+		/* open a file */
+		printf("\nThe file '%s' is opening ...\n", f_name);
+
+		FILE *fp;
+		if ((fp = fopen(f_name, "r")) == NULL)
+		{
+			printf("\nError opening the file: '%s' [Error string: '%s']",
+						 f_name, strerror(errno));
+			return -1;
+		}
+
+		char buff[NMP_MSG_LEN];
+		while (1)
+		{
+			fgets(buff, NMP_MSG_LEN - 1, fp);
+			printf("3: %s\n", buff);
+
+			nmp_obj.elm.len = message.len;
+			strcpy(nmp_obj.elm.msg, buff);
+
+			printf("The read text is: '%s'", buff);
+
+			/* Send message in named pipe */
+			int result = nmp_send(&nmp_obj);
+
+			if (result == -1)
+			{
+				return -1;
+			}
+			/* reset the file pointer at the file begin  */
+  		(void)fseek(fp, 0, SEEK_SET);
+
+			printf("Success sending message in pipe.\n");
+
+			nanosleep((const struct timespec[]){{5, 0L}}, NULL);
+		}
 	}
 	return 0;
 }
