@@ -58,6 +58,25 @@ int open_server_mq(const char *f_name)
 		exit(1);
 	}
 
+	/* semaphori edhe shared memory */
+	int semaphor_id;
+	int shm_id;
+
+	pid_t r_pid;
+	r_pid = fork();
+
+	if (r_pid < 0)
+	{
+		perror("fork");
+		return -1;
+	}
+
+	if (r_pid == 0)
+	{
+		/* Record child process */
+		
+	}
+
 	while (1)
 	{
 		/* Receive message in message queue */
@@ -100,8 +119,6 @@ int open_server_mq(const char *f_name)
 				{
 					/* Receive information from pipe */
 					int rcvresult = nmp_recv(&nmp_obj);
-					printf("after receive result is %d\n", rcvresult);
-
 					printf("Message in server: %s\n", nmp_obj.elm.msg);
 
 					if (rcvresult == -1)
@@ -110,7 +127,7 @@ int open_server_mq(const char *f_name)
 					}
 					else
 					{
-						printf("SUCCESS");
+						printf("SUCCESS\n");
 					}
 				}
 			}
@@ -195,8 +212,9 @@ int open_client_mq(const char *f_name, int n_secs)
 		}
 
 		/* No more rows to send */
-		free(fp);
 		printf("File content sent successfully\n.");
+		free(fp);
+		nmp_free(&nmp_obj); 
 	}
 	return 0;
 }
