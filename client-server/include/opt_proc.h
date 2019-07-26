@@ -13,9 +13,9 @@
 #ifndef _OPT_PROC__H
 #define _OPT_PROC__H 1
 
-void  usage_server();
-void  usage_server();
 int   get_client_args (int argc, char **argv, char** f_name);
 int   get_server_args (int argc, char **argv, char** f_name);
+void  usage_server();
+void  usage_server();
 
 #endif /* _OPT_PROC__H */

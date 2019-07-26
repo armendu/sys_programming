@@ -4,7 +4,7 @@
  *
  * @file  msg_queue.c
  *
- * @brief 
+ * @brief Implements the functionality for 
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun21, Jul 21, 2019 23:35$
@@ -21,6 +21,9 @@
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/mman.h>
 
 #include "msg_queue.h"
 #include "nm_pipe.h"
@@ -37,6 +40,17 @@ void sig_handler(int signum);
 
 mqd_t mq_server;
 
+/***************************************************************************//** 
+ * @brief Starts main server process
+ * 
+ * Starts main server process, creates message queue, connections 
+ * handlers for each client, and a record process 
+ *
+ * @param[in] f_name - file name
+ *
+ * @retval -1 in case an error was occurred
+ * @retval 	0 if no error occurred
+ ******************************************************************************/
 int open_server_mq(const char *f_name)
 {
 	signal(SIGINT, sig_handler);
@@ -81,10 +95,16 @@ int open_server_mq(const char *f_name)
 						 f_name, strerror(errno));
 			return -1;
 		}
-		
+
 		while (1)
 		{
-			
+			/*
+			if (str_write(fp, shmem) > 0)
+			{
+				printf("Wrote all content to file.\n");
+				break;
+			}
+			 */
 		}
 	}
 
@@ -148,6 +168,18 @@ int open_server_mq(const char *f_name)
 	return 0;
 }
 
+/***************************************************************************//** 
+ * @brief Starts main client process
+ * 
+ * Starts main client process, creates message queue, and named pipe
+ * to communicate with a connection handler. 
+ *
+ * @param[in] f_name - file name
+ * @param[in] n_secs - the number of seconds the client sleeps
+ *
+ * @retval -1 in case an error was occurred
+ * @retval 	0 if no error occurred
+ ******************************************************************************/
 int open_client_mq(const char *f_name, int n_secs)
 {
 	signal(SIGINT, sig_handler);
@@ -221,11 +253,16 @@ int open_client_mq(const char *f_name, int n_secs)
 		/* No more rows to send */
 		printf("File content sent successfully\n.");
 		free(fp);
-		nmp_free(&nmp_obj); 
+		nmp_free(&nmp_obj);
 	}
 	return 0;
 }
 
+/***************************************************************************//** 
+ * @brief Handles the CTRL+C signal.
+ *
+ * @param[in] signum - The signal number
+ ******************************************************************************/
 void sig_handler(int signum)
 {
 	if (signum != SIGINT)

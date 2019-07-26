@@ -38,9 +38,6 @@ int str_len (const char *str)
 /***************************************************************************//** 
  * @brief Writes an input string into the file 
  *
- * First the four (4) bytes will be written indicating the length of the
- * string to be written, and then the string itself will be written.
- *
  * @param[in,out] fp - file pointer
  * @param[in] str - the input string
  *
@@ -54,22 +51,13 @@ int str_write (FILE *fp, const char *str)
 
   length = str_len (str);
 
-  status = (int) fwrite ((const void *) &length, (size_t) 1, 
-                         (size_t) SER_INT_LEN, fp);
-
-  if (status == 0)
-    {
-       printf ("\nError writing length of string '%s' to the file", str);
-       return status;
-    }
-
   status = (int) fwrite ((const void *) str, (size_t) 1, 
                          (size_t) length, fp);
 
   if (status == 0)
-    {
-       printf ("\nError writing string '%s' to the file", str);
-    }
+  {
+    printf ("\nError writing string '%s' to the file", str);
+  }
 
   return status;
 }

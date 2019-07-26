@@ -26,8 +26,8 @@
 void usage_server()
 {
   printf ("\nSYNOPSIS\n");
-  printf ("\nstudent_management_sys [OPTION] ... \n");
-  printf ("\t -f arg,      (mandatory) the log file name\n");
+  printf ("\nserver [OPTION] ... \n");
+  printf ("\t -f arg, (mandatory) the log file name\n");
 }
 
 /***************************************************************************/ /**
@@ -36,24 +36,25 @@ void usage_server()
 void usage_client()
 {
   printf ("\nSYNOPSIS\n");
-  printf ("\nstudent_management_sys [OPTION] ... \n");
+  printf ("\nclient [OPTION] ... \n");
   printf ("\t -f arg,      (mandatory) the file name\n");
-  printf ("\t -t arg,      (mandatory) seconds\n");
+  printf ("\t -t arg,      (optional) the number of seconds to wait\n");
 }
 
 /***************************************************************************/ /**
- * @brief Returns the number of characters in a given string
+ * @brief Gets the arguments for the client process
  *
  * @param[in]     argc    - no. of arguments
  * @param[in]     argv    - argument value
  * @param[in,out] f_name  - the file name
  *
- * @retval char respresenting the mode
+ * @retval -1 - If the f_name was not specified
+ * @retval >0 - The seconds given by the user
+ * @retval  0 - If seconds given by the user are negative
  ******************************************************************************/
 int get_client_args(int argc, char **argv, char** f_name)
 {
   int f_set 	= 0;
-	int s_set   = 0;
   int n_secs 	= 0;
 
   /* Check no. of arguments */
@@ -74,7 +75,6 @@ int get_client_args(int argc, char **argv, char** f_name)
 				*f_name = optarg;
 				break;
 			case 't':
-				s_set = opt;
 				n_secs = atoi(optarg);
 				break;
 			default:
@@ -90,16 +90,19 @@ int get_client_args(int argc, char **argv, char** f_name)
 		return ERROR_CODE;
 	}
 
-	if (s_set == 0)
-	{
-		printf("The option '-s' is mandatory\n");
-		usage_client();
-		return ERROR_CODE;
-	}
-
-  return n_secs;
+	return (n_secs > 0) ? n_secs : 0;
 }
 
+/***************************************************************************/ /**
+ * @brief Gets the arguments for the server process
+ *
+ * @param[in]     argc    - no. of arguments
+ * @param[in]     argv    - argument value
+ * @param[in,out] f_name  - the file name
+ *
+ * @retval -1 - If the user didn't provide the f_name
+ * @retval  0 - If the f_name was specified
+ ******************************************************************************/
 int get_server_args(int argc, char **argv, char** f_name)
 {
   int f_set = 0;
