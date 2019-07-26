@@ -21,13 +21,16 @@
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/sem.h>
+#include <sys/ipc.h>
 
 #include "msg_queue.h"
 #include "nm_pipe.h"
 #include "f_ser.h"
+#include "sh_mem.h"
+#include "sh_sem.h"
 
 /* Define constants */
 #define SERVER_QUEUE_NAME "/server-mq"
@@ -71,10 +74,20 @@ int open_server_mq(const char *f_name)
 		perror("Server: mq_open");
 		exit(1);
 	}
-
-	/* semaphori edhe shared memory */
-	int semaphor_id;
+	
+	/* Semaphor */
 	int shm_id;
+	shm_elm_t shmptr;
+
+	shm_id = shm_init(&shmptr);
+	/* TODO: Change to ftok */
+	sem_id = semget((key_t)123, 1, QUEUE_PERMISSIONS | IPC_CREAT);
+	
+	if(set_semaphore_value() == -1)
+	{
+		printf("Semaphore value not initialized... \n");
+		exit (-1);
+	}
 
 	pid_t r_pid;
 	r_pid = fork();
@@ -96,15 +109,18 @@ int open_server_mq(const char *f_name)
 			return -1;
 		}
 
+		char* msg = NULL;
 		while (1)
 		{
-			/*
-			if (str_write(fp, shmem) > 0)
+			if (shm_read(shm_id, &shmptr, msg) == 0)
 			{
-				printf("Wrote all content to file.\n");
-				break;
+					printf("ENTERING\n\n \n");
+				if (str_write(fp, msg) > 0)
+				{
+					printf("Record process: Wrote all content to file.\n");
+				}
 			}
-			 */
+			printf("exisiting\n\n\n\n");
 		}
 	}
 
@@ -119,7 +135,7 @@ int open_server_mq(const char *f_name)
 		}
 		else
 		{
-			printf("Received message from client: %s\n", message.msg);
+			printf("Con_Handler: Received message from client: %s\n", message.msg);
 
 			nm_pipe_t nmp_obj;
 
@@ -153,8 +169,13 @@ int open_server_mq(const char *f_name)
 						perror("Failed to read from pipe.\n");
 						return -1;
 					}
-					
-					printf("\nSuccessfully read from pipe.\n");
+
+					p();
+					printf("\nCon_Handler: Writing: %s", nmp_obj.elm.msg);
+					shm_write(shm_id, &shmptr, nmp_obj.elm.msg);
+					v();
+
+					printf("\nCon_Handler: Successfully read from pipe.\n");
 				}
 			}
 		}
@@ -175,7 +196,7 @@ int open_server_mq(const char *f_name)
  * @retval -1 in case an error was occurred
  * @retval 	0 if no error occurred
  ******************************************************************************/
-int open_client_mq(const char *f_name, int n_secs)
+int open_client_mq(const char *f_name, const int n_secs)
 {
 	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");
@@ -273,6 +294,7 @@ void sig_handler(int signum)
 	}
 
 	printf("Received SIGINT. Exiting Application\n");
+	fflush(stdout);
 	mq_close(mq_server);
 	mq_unlink(SERVER_QUEUE_NAME);
 

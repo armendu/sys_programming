@@ -23,6 +23,6 @@ typedef struct _msq_elm
 } msq_elm_t;
 
 int open_server_mq(const char *f_name);
-int open_client_mq(const char *f_name, int n_secs);
+int open_client_mq(const char *f_name, const int n_secs);
 
 #endif /* _MSG_QUEUE__H */

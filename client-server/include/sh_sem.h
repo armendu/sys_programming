@@ -13,4 +13,16 @@
 #ifndef _SH_SEM__H
 #define _SH_SEM__H 1
 
+static int sem_id;
+
+union semun
+{
+	int val;
+};
+
+int set_semaphore_value();
+void delete_semaphore();
+int p();
+int v();
+
 #endif /* _SH_SEM__H */

@@ -58,7 +58,7 @@ int get_client_args(int argc, char **argv, char** f_name)
   int n_secs 	= 0;
 
   /* Check no. of arguments */
-	if(argc < 5)
+	if(argc < 3)
 	{
 		printf("Too few arguments provided. \n");
 		usage_client();
