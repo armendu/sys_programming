@@ -74,7 +74,18 @@ int open_server_mq(const char *f_name)
 	if (r_pid == 0)
 	{
 		/* Record child process */
+		FILE *fp;
+		if ((fp = fopen(f_name, "a+")) == NULL)
+		{
+			printf("\nError opening the file: '%s' [Error string: '%s']",
+						 f_name, strerror(errno));
+			return -1;
+		}
 		
+		while (1)
+		{
+			
+		}
 	}
 
 	while (1)
@@ -130,10 +141,6 @@ int open_server_mq(const char *f_name)
 						printf("SUCCESS\n");
 					}
 				}
-			}
-			else
-			{
-				/* Parent process */
 			}
 		}
 	}
