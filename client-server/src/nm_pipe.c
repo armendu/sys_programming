@@ -118,14 +118,12 @@ int nmp_recv  (nm_pipe_t *const nmp_obj)
   int res = -1;
   int len = 0;
 
-  printf("Before read value of res: %d\n", res);
   res = read (nmp_obj->nmp_id, &len, sizeof (int));
-  printf("After read value of res: %d\n", res);
+  
   if (res <0)
     {
       perror ("msq_recv:: receive message failed");
     }
-  printf("After read value of res: %d\n", res);
 
   printf ("\n nmp_recv [1]: len= %d", nmp_obj->elm.len);
   res = read (nmp_obj->nmp_id, &nmp_obj->elm.msg [0], len);

@@ -34,7 +34,7 @@
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
 #define MAX_MSG_SIZE 256
-#define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
+#define MSG_BUFFER_SIZE 512
 
 void sig_handler(int signum);
 
@@ -68,7 +68,7 @@ int open_server_mq(const char *f_name)
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_RDONLY | O_CREAT,
 													 QUEUE_PERMISSIONS, &attr)) == -1)
 	{
-		perror("Server: mq_open (server)");
+		perror("Server: mq_open");
 		exit(1);
 	}
 
@@ -125,7 +125,6 @@ int open_server_mq(const char *f_name)
 
 			/* Create pipe if it does not exist */
 			int result = nmp_init(&nmp_obj, message.msg);
-			printf("init result is %d\n", result);
 
 			if (result == -1)
 			{
@@ -149,17 +148,13 @@ int open_server_mq(const char *f_name)
 				while (1)
 				{
 					/* Receive information from pipe */
-					int rcvresult = nmp_recv(&nmp_obj);
-					printf("Message in server: %s\n", nmp_obj.elm.msg);
-
-					if (rcvresult == -1)
+					if(nmp_recv(&nmp_obj) == -1)
 					{
-						printf("FAILED TO READ FROM PIPE\n");
+						perror("Failed to read from pipe.\n");
+						return -1;
 					}
-					else
-					{
-						printf("SUCCESS\n");
-					}
+					
+					printf("\nSuccessfully read from pipe.\n");
 				}
 			}
 		}
@@ -205,21 +200,21 @@ int open_client_mq(const char *f_name, int n_secs)
 
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
 	{
-		perror("Client: mq_open (server)");
+		perror("Client: mq_open");
 		exit(1);
 	}
 
 	if (mq_send(mq_server, (const char *)&message, sizeof(message) + 1,
 							0) == -1)
 	{
-		perror("Not able to send message to server\n");
+		perror("Client: Not able to send message to server");
 	}
 	else
 	{
-		printf("Sent message: '%s'\n", message.msg);
+		printf("Client: Sent message: '%s'\n", message.msg);
 
 		/* open a file */
-		printf("\nThe file '%s' is opening ...\n", f_name);
+		printf("\nClient: The file '%s' is opening ...\n", f_name);
 
 		FILE *fp;
 		if ((fp = fopen(f_name, "r")) == NULL)
@@ -232,10 +227,17 @@ int open_client_mq(const char *f_name, int n_secs)
 		char buff[NMP_MSG_LEN];
 		while (fgets(buff, NMP_MSG_LEN, fp) != NULL)
 		{
+			int s_len = str_len(buff);
+
+			if (buff[s_len - 1] == '\n')
+			{
+				buff[s_len - 1] = '\0';
+			}
+    	
 			nmp_obj.elm.len = message.len;
 			strcpy(nmp_obj.elm.msg, buff);
 
-			printf("The read text is: '%s'", buff);
+			printf("Successfully got message '%s'\n", buff);
 
 			/* Send message in named pipe */
 			int result = nmp_send(&nmp_obj);
@@ -245,7 +247,7 @@ int open_client_mq(const char *f_name, int n_secs)
 				return -1;
 			}
 
-			printf("Success sending message in pipe. Now sleeping...\n");
+			printf("\nMessage sent to named pipe. Now sleeping...\n");
 
 			nanosleep((const struct timespec[]){{n_secs, 0L}}, NULL);
 		}
