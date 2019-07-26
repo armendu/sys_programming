@@ -54,7 +54,7 @@ mqd_t mq_server;
 int open_server_mq(const char *f_name)
 {
 	signal(SIGINT, sig_handler);
-	printf("Server is running..\n");
+	printf("Server is running. Waiting for clients...\n");
 	msq_elm_t message;
 
 	/* Set attributes for server queue */
@@ -91,7 +91,7 @@ int open_server_mq(const char *f_name)
 		FILE *fp;
 		if ((fp = fopen(f_name, "a+")) == NULL)
 		{
-			printf("\nError opening the file: '%s' [Error string: '%s']",
+			printf("\nError opening the file: '%s' [Error string: '%s']\n",
 						 f_name, strerror(errno));
 			return -1;
 		}
@@ -219,7 +219,7 @@ int open_client_mq(const char *f_name, int n_secs)
 		FILE *fp;
 		if ((fp = fopen(f_name, "r")) == NULL)
 		{
-			printf("\nError opening the file: '%s' [Error string: '%s']",
+			printf("\nError opening the file: '%s' [Error string: '%s']\n",
 						 f_name, strerror(errno));
 			return -1;
 		}

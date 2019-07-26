@@ -78,7 +78,7 @@ dox:
 	mkdir -p $(DOX_DIR)
 	@echo "Created doxygen directory."
 
-	doxygen ./doc/exc2.dox
+	doxygen ./doc/client-server.dox
 
 splint:
 	splint $(SPLINTFLAGS) $(INCLUDEPATHS) $(SRC_DIR)/server.c
