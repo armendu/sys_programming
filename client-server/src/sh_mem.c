@@ -29,12 +29,12 @@
  * @retval -1 - If an error occurred
  * @retval >0 - The id of the shared memory
  ******************************************************************************/
-int shm_init(void* shm_ptr)
+int shm_init(shm_elm_t *shm_ptr)
 {
   int shm_fd;
 
   shm_fd = shm_open(SHM_NAME, O_CREAT | SHM_PERMISSIONS, 0);
-  
+
   if (shm_fd == -1)
   {
     perror("shm_init");
@@ -42,14 +42,14 @@ int shm_init(void* shm_ptr)
   }
 
   /* configure the size of the shared memory object */
-  if(ftruncate(shm_fd, SHM_SIZE) == -1)
+  if (ftruncate(shm_fd, sizeof(shm_elm_t)) == -1)
   {
     perror("shm_init");
     return -1;
   }
 
   /* memory map the shared memory object */
-  shm_ptr = mmap(0, SHM_SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+  shm_ptr = mmap(0, sizeof(shm_elm_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
   if (shm_ptr == MAP_FAILED)
   {
@@ -57,23 +57,7 @@ int shm_init(void* shm_ptr)
     return -1;
   }
 
-  if (close(shm_fd) == -1)
-  {
-    perror("shm_init");
-    return -1;
-  }
-
   return 0;
-}
-
-/***************************************************************************/ /**
- * @brief Free the shared memory
- *
- * @param[in] shm_id - the shared memory id
- * @param[in] shm_obj - the shared memory object
- ******************************************************************************/
-void shm_free(int shm_id, shm_elm_t *const shm_obj)
-{
 }
 
 /***************************************************************************/ /**
@@ -86,10 +70,12 @@ void shm_free(int shm_id, shm_elm_t *const shm_obj)
  * @retval -1 - If an error occurred
  * @retval 0 - If success
  ******************************************************************************/
-int shm_write(void* shm_ptr, const shm_elm_t shm_element)
+int shm_write(shm_elm_t *shm_ptr, shm_elm_t shm_element)
 {
   printf("copying %d bytes\n", shm_element.len);
-  memcpy(shm_ptr, &shm_element, shm_element.len);
+  /* memcpy(shm_ptr, &shm_element, shm_element.len); */
+  strcpy(shm_ptr->msg, shm_element.msg);
+  /* shm_ptr = &shm_element;*/
 
   return 0;
 }
@@ -104,7 +90,25 @@ int shm_write(void* shm_ptr, const shm_elm_t shm_element)
  * @retval -1 - If an error occurred
  * @retval 0 - If success
  ******************************************************************************/
-int shm_read(int shm_id, shm_elm_t *shmp, char *msg)
+int shm_read(shm_elm_t *shm_ptr)
 {
+  printf("shm_ptr %s\n\n\n\n", shm_ptr->msg);
+  return 0;
+}
+
+/***************************************************************************/ /**
+ * @brief Free the shared memory
+ *
+ * @param[in] shm_id - the shared memory id
+ * @param[in] shm_obj - the shared memory object
+ ******************************************************************************/
+int shm_free()
+{
+  if (shm_unlink(SHM_NAME) == -1)
+  {
+    perror("shm_free");
+    return -1;
+  }
+
   return 0;
 }

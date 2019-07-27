@@ -19,6 +19,6 @@
 int create_named_sem(sem_t *sem);
 int 	p();
 int 	v();
-void 	sem_free();
+int 	sem_free();
 
 #endif /* _SH_SEM__H */

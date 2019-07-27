@@ -27,9 +27,9 @@ typedef struct _shm_elm
   char msg[SHM_MSG_LEN];
 } shm_elm_t;
 
-int shm_init(void* shm_ptr);
-int   shm_read  (int shm_id, shm_elm_t *shmp, char* msg);
-int shm_write(void* shm_ptr, const shm_elm_t shm_element);
-void  shm_free (int shm_id, shm_elm_t *const shm_obj);
+int shm_init(shm_elm_t *shm_ptr);
+int shm_read(shm_elm_t *shm_ptr);
+int shm_write(shm_elm_t *shm_ptr, const shm_elm_t shm_element);
+int shm_free();
 
 #endif /* _SH_MEM__H */

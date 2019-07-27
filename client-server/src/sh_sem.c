@@ -29,3 +29,9 @@ int create_named_sem(sem_t *sem)
 
   return 0;
 }
+
+int sem_free()
+{
+	sem_unlink(SEM_NAME);
+  return 0;
+}

@@ -65,18 +65,31 @@ int start_server(const char *f_name)
 		return -1;
 	}
 	
-	sem_unlink(SEM_NAME);
 	/* Semaphor and shared memory */
 	if (create_named_sem(&sem) == -1)
 	{
+		sem_free(SEM_NAME);
+		return -1;
+	}
+	shm_free();
+	shm_elm_t *addr;
+	addr->state = SHM_EMPTY;
+	addr->len = str_len("test");
+
+	if (shm_init(addr) == -1)
+	{
+		shm_free();
 		return -1;
 	}
 
-	void* addr = NULL;
-	if (shm_init(addr) == -1)
-	{
-		return -1;
-	}
+	shm_elm_t element;
+	element.len = sizeof(element.msg);
+	strcpy(element.msg, "test");
+	printf("element.msg: %s\n", element.msg);
+
+	shm_write(addr, element);
+
+	shm_read(addr);
 	
 	/* Create record process */
 	pid_t r_pid;
@@ -273,10 +286,10 @@ void sig_handler(int signum)
 
 	/* For the semaphore */
 	sem_close(&sem);
-	sem_unlink(SEM_NAME);
+	sem_free();
 
 	/* For the shared memory */
-  shm_unlink(SHM_NAME);
+	shm_free();
 
 	exit(0);
 }
