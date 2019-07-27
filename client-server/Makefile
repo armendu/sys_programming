@@ -44,11 +44,11 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/client $(EXE_DIR)/server 
 
-$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o 
-	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o -lrt -o $(EXE_DIR)/client
+$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/rec_handler.o 
+	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o -lrt $(OBJ_DIR)/rec_handler.o -lpthread -o $(EXE_DIR)/client
 
-$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o
-	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o -lrt -o $(EXE_DIR)/server
+$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o 
+	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o  -lrt -lpthread -o $(EXE_DIR)/server
 
 $(OBJ_DIR)/client.o: $(SRC_DIR)/client.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/client.o $(SRC_DIR)/client.c 
@@ -73,6 +73,9 @@ $(OBJ_DIR)/opt_proc.o: $(SRC_DIR)/opt_proc.c $(INCLUDE_DIR)/opt_proc.h
 	
 $(OBJ_DIR)/f_ser.o: $(SRC_DIR)/f_ser.c $(INCLUDE_DIR)/f_ser.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/f_ser.o $(SRC_DIR)/f_ser.c
+
+$(OBJ_DIR)/rec_handler.o: $(SRC_DIR)/rec_handler.c $(INCLUDE_DIR)/rec_handler.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/rec_handler.o $(SRC_DIR)/rec_handler.c
 
 dox:
 	mkdir -p $(DOX_DIR)

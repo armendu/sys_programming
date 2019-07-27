@@ -10,14 +10,13 @@
  * @date   $Date: Sun, Jul 21, 2019 23:35$
  */
 
-#include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/types.h>
-#include <string.h>
-#include <errno.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <string.h>
 
 #include "sh_mem.h"
@@ -30,26 +29,41 @@
  * @retval -1 - If an error occurred
  * @retval >0 - The id of the shared memory
  ******************************************************************************/
-int shm_init(shm_elm_t *shm_obj)
+int shm_init(void* shm_ptr)
 {
-  key_t shmkey;
-  int shmid;
+  int shm_fd;
 
-  shmkey = ftok(".", 'x');
-  shmid = shmget(shmkey, sizeof(shm_elm_t), IPC_CREAT | 0666);
-
-  if (shmid < 0)
+  shm_fd = shm_open(SHM_NAME, O_CREAT | SHM_PERMISSIONS, 0);
+  
+  if (shm_fd == -1)
   {
+    perror("shm_init");
     return -1;
   }
 
-  shmat(shmid, &shm_obj, 0);
-  if (shm_obj == NULL)
+  /* configure the size of the shared memory object */
+  if(ftruncate(shm_fd, SHM_SIZE) == -1)
   {
+    perror("shm_init");
     return -1;
   }
 
-  return shmid;
+  /* memory map the shared memory object */
+  shm_ptr = mmap(0, SHM_SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+
+  if (shm_ptr == MAP_FAILED)
+  {
+    perror("shm_init");
+    return -1;
+  }
+
+  if (close(shm_fd) == -1)
+  {
+    perror("shm_init");
+    return -1;
+  }
+
+  return 0;
 }
 
 /***************************************************************************/ /**
@@ -60,8 +74,6 @@ int shm_init(shm_elm_t *shm_obj)
  ******************************************************************************/
 void shm_free(int shm_id, shm_elm_t *const shm_obj)
 {
-  shmdt((void *)shm_obj);
-  shmctl(shm_id, IPC_RMID, NULL);
 }
 
 /***************************************************************************/ /**
@@ -74,25 +86,11 @@ void shm_free(int shm_id, shm_elm_t *const shm_obj)
  * @retval -1 - If an error occurred
  * @retval 0 - If success
  ******************************************************************************/
-int shm_write(int shm_id, shm_elm_t *shm_seg, const char *text)
+int shm_write(void* shm_ptr, const shm_elm_t shm_element)
 {
-  char *bufptr;
+  printf("copying %d bytes\n", shm_element.len);
+  memcpy(shm_ptr, &shm_element, shm_element.len);
 
-  if (shm_id == -1)
-  {
-    perror("shm_write");
-    return -1;
-  }
-
-  /* Transfer blocks of data from buffer to shared memory */
-  bufptr = shm_seg->msg;
-  shm_seg->len = strlen(shm_seg->msg);
-  shm_seg->state = SHM_EMPTY;
-  strcpy(bufptr, text);
-
-  shm_seg->state = SHM_FULL;
-
-  printf("\nshm_write: Wrote: %s\n", shm_seg->msg);
   return 0;
 }
 
@@ -108,34 +106,5 @@ int shm_write(int shm_id, shm_elm_t *shm_seg, const char *text)
  ******************************************************************************/
 int shm_read(int shm_id, shm_elm_t *shmp, char *msg)
 {
-  if (shm_id == -1)
-  {
-    perror("shm_read");
-    return -1;
-  }
-
-  if (shmp->state == SHM_FULL)
-  {
-    if (shmp->len == -1)
-    {
-      perror("shm_read");
-      return -1;
-    }
-
-    if (shmp->len == 0)
-    {
-      shmp->state = SHM_EMPTY;
-      return -1;
-    }
-
-    strcpy(msg, shmp->msg);
-
-    printf("shm_read: Shared Memory: Read %d bytes\n", shmp->len);
-    shmp->state = SHM_EMPTY;
-
-    printf("shm_read: Complete\n");
-    return 0;
-  }
-
-  return -1;
+  return 0;
 }

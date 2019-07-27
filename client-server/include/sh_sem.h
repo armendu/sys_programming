@@ -13,14 +13,10 @@
 #ifndef _SH_SEM__H
 #define _SH_SEM__H 1
 
-static int sem_id;
+#define SEM_NAME        "logger_semaphore"
+#define SEM_PERMISSIONS 0666
 
-union semun
-{
-	int semun_value;
-};
-
-int 	sem_set();
+int create_named_sem(sem_t *sem);
 int 	p();
 int 	v();
 void 	sem_free();

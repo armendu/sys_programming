@@ -13,34 +13,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <mqueue.h>
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/sem.h>
-#include <sys/ipc.h>
+#include <semaphore.h>
 
 #include "msg_queue.h"
 #include "nm_pipe.h"
-#include "f_ser.h"
 #include "sh_mem.h"
 #include "sh_sem.h"
-
-/* Define constants */
-#define SERVER_QUEUE_NAME "/server-mq"
-#define MAX_MESSAGES 			10
-#define MAX_MSG_SIZE 			256
-#define MSG_BUFFER_SIZE 	512
+#include "rec_handler.h"
+#include "f_ser.h"
 
 void sig_handler(int signum);
 
 mqd_t mq_server;
+sem_t sem;
 
 /***************************************************************************//** 
  * @brief Starts main server process
@@ -57,10 +47,11 @@ int start_server(const char *f_name)
 {
 	signal(SIGINT, sig_handler);
 	printf("Server is running. Waiting for clients...\n");
-	msq_elm_t message;
+
+	msq_elm_t 			message;
+	struct mq_attr 	attr;
 
 	/* Set attributes for server queue */
-	struct mq_attr attr;
 	attr.mq_maxmsg = MAX_MESSAGES;
 	attr.mq_msgsize = MAX_MSG_SIZE;
 	attr.mq_flags = 0;
@@ -71,22 +62,22 @@ int start_server(const char *f_name)
 													 QUEUE_PERMISSIONS, &attr)) == -1)
 	{
 		perror("Server: mq_open");
-		exit(1);
+		return -1;
 	}
 	
+	sem_unlink(SEM_NAME);
 	/* Semaphor and shared memory */
-	int shm_id;
-	shm_elm_t shmptr;
-
-	shm_id = shm_init(&shmptr);
-	sem_id = semget((key_t)123, 1, QUEUE_PERMISSIONS | IPC_CREAT);
-	
-	if(sem_set() == -1)
+	if (create_named_sem(&sem) == -1)
 	{
-		printf("Semaphore value not initialized... \n");
-		exit (-1);
+		return -1;
 	}
 
+	void* addr = NULL;
+	if (shm_init(addr) == -1)
+	{
+		return -1;
+	}
+	
 	/* Create record process */
 	pid_t r_pid;
 	r_pid = fork();
@@ -99,28 +90,12 @@ int start_server(const char *f_name)
 
 	if (r_pid == 0)
 	{
-		/* Record child process */
-		FILE *fp;
-		if ((fp = fopen(f_name, "a+")) == NULL)
+		if (handle_recording(f_name) == -1)
 		{
-			printf("\nError opening the file: '%s' [Error string: '%s']\n",
-						 f_name, strerror(errno));
 			return -1;
 		}
-
-		char* msg = NULL;
-		while (1)
-		{
-			if (shm_read(shm_id, &shmptr, msg) == 0)
-			{
-				if (str_write(fp, msg) > 0)
-				{
-					printf("Record process: Wrote all content to file.\n");
-				}
-			}
-		}
 	}
-
+	
 	while (1)
 	{
 		/* Receive message in message queue */
@@ -165,10 +140,13 @@ int start_server(const char *f_name)
 						perror("Failed to read from pipe.\n");
 						return -1;
 					}
+					/*
 					p();
 					printf("\nConnection Handler: Writing: %s", nmp_obj.elm.msg);
 					shm_write(shm_id, &shmptr, nmp_obj.elm.msg);
 					v();
+					 */
+					
 				}
 			}
 		}
@@ -194,9 +172,12 @@ int start_client(const char *f_name, const int n_secs)
 	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");
 
-	/* Get process id and create message */
-	int p_id = getpid();
+	int 			p_id;
 	msq_elm_t message;
+	nm_pipe_t nmp_obj;
+
+	/* Get process id and create message */
+	p_id = getpid();
 
 	/* Set pipe name and message data */
 	message.p_id = p_id;
@@ -204,18 +185,16 @@ int start_client(const char *f_name, const int n_secs)
 	sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
 
 	/* Create pipe if it does not exist */
-	nm_pipe_t nmp_obj;
-	int result = nmp_init(&nmp_obj, message.msg);
-
-	if (result == -1)
+	if(nmp_init(&nmp_obj, message.msg) == -1) 
 	{
+		perror("Client: npm_init");
 		return -1;
 	}
 
 	if ((mq_server = mq_open(SERVER_QUEUE_NAME, O_WRONLY)) == -1)
 	{
 		perror("Client: mq_open");
-		exit(1);
+		return -1;
 	}
 
 	if (mq_send(mq_server, (const char *)&message, sizeof(message) + 1,
@@ -243,6 +222,7 @@ int start_client(const char *f_name, const int n_secs)
 		{
 			int s_len = str_len(buff);
 
+			/* Remove the last character if it's a new line */
 			if (buff[s_len - 1] == '\n')
 			{
 				buff[s_len - 1] = '\0';
@@ -262,7 +242,6 @@ int start_client(const char *f_name, const int n_secs)
 			}
 
 			printf("\nMessage sent to named pipe. Now sleeping...\n");
-
 			nanosleep((const struct timespec[]){{n_secs, 0L}}, NULL);
 		}
 
@@ -271,6 +250,7 @@ int start_client(const char *f_name, const int n_secs)
 		free(fp);
 		nmp_free(&nmp_obj);
 	}
+
 	return 0;
 }
 
@@ -290,6 +270,13 @@ void sig_handler(int signum)
 	fflush(stdout);
 	mq_close(mq_server);
 	mq_unlink(SERVER_QUEUE_NAME);
+
+	/* For the semaphore */
+	sem_close(&sem);
+	sem_unlink(SEM_NAME);
+
+	/* For the shared memory */
+  shm_unlink(SHM_NAME);
 
 	exit(0);
 }
