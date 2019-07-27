@@ -4,7 +4,7 @@
  *
  * @file  nm_pipe.h
  *
- * @brief Implements the named pipe functionality
+ * @brief Provides functions for the named pipe functionality
  * 
  * @author (IS) Dr.techn. Dipl.-Ing. Idriz Smaili (smaili.idriz@gmail.com)
  * @date   $Date: Thu, Jun 27, 2019 1:25:09 PM$

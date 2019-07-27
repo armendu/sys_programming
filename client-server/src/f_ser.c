@@ -4,7 +4,7 @@
  *
  * @file  f_ser.c
  *
- * @brief Implements functions for the student file serialization
+ * @brief Implements functions for serialization
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 19 May 19, 18:02:55 WEST 2019 $

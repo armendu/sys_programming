@@ -4,7 +4,7 @@
  *
  * @file  msg_queue.c
  *
- * @brief Implements the functionality for 
+ * @brief Implements the functionality for communicating with message queues
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun21, Jul 21, 2019 23:35$
@@ -34,10 +34,9 @@
 
 /* Define constants */
 #define SERVER_QUEUE_NAME "/server-mq"
-#define QUEUE_PERMISSIONS 0660
-#define MAX_MESSAGES 10
-#define MAX_MSG_SIZE 256
-#define MSG_BUFFER_SIZE 512
+#define MAX_MESSAGES 			10
+#define MAX_MSG_SIZE 			256
+#define MSG_BUFFER_SIZE 	512
 
 void sig_handler(int signum);
 
@@ -54,7 +53,7 @@ mqd_t mq_server;
  * @retval -1 in case an error was occurred
  * @retval 	0 if no error occurred
  ******************************************************************************/
-int open_server_mq(const char *f_name)
+int start_server(const char *f_name)
 {
 	signal(SIGINT, sig_handler);
 	printf("Server is running. Waiting for clients...\n");
@@ -75,20 +74,20 @@ int open_server_mq(const char *f_name)
 		exit(1);
 	}
 	
-	/* Semaphor */
+	/* Semaphor and shared memory */
 	int shm_id;
 	shm_elm_t shmptr;
 
 	shm_id = shm_init(&shmptr);
-	/* TODO: Change to ftok */
 	sem_id = semget((key_t)123, 1, QUEUE_PERMISSIONS | IPC_CREAT);
 	
-	if(set_semaphore_value() == -1)
+	if(sem_set() == -1)
 	{
 		printf("Semaphore value not initialized... \n");
 		exit (-1);
 	}
 
+	/* Create record process */
 	pid_t r_pid;
 	r_pid = fork();
 
@@ -114,13 +113,11 @@ int open_server_mq(const char *f_name)
 		{
 			if (shm_read(shm_id, &shmptr, msg) == 0)
 			{
-					printf("ENTERING\n\n \n");
 				if (str_write(fp, msg) > 0)
 				{
 					printf("Record process: Wrote all content to file.\n");
 				}
 			}
-			printf("exisiting\n\n\n\n");
 		}
 	}
 
@@ -135,8 +132,6 @@ int open_server_mq(const char *f_name)
 		}
 		else
 		{
-			printf("Con_Handler: Received message from client: %s\n", message.msg);
-
 			nm_pipe_t nmp_obj;
 
 			/* Create pipe if it does not exist */
@@ -148,6 +143,7 @@ int open_server_mq(const char *f_name)
 				return -1;
 			}
 
+			/* Create connection handler process */
 			pid_t pid;
 			pid = fork();
 
@@ -169,13 +165,10 @@ int open_server_mq(const char *f_name)
 						perror("Failed to read from pipe.\n");
 						return -1;
 					}
-
 					p();
-					printf("\nCon_Handler: Writing: %s", nmp_obj.elm.msg);
+					printf("\nConnection Handler: Writing: %s", nmp_obj.elm.msg);
 					shm_write(shm_id, &shmptr, nmp_obj.elm.msg);
 					v();
-
-					printf("\nCon_Handler: Successfully read from pipe.\n");
 				}
 			}
 		}
@@ -196,7 +189,7 @@ int open_server_mq(const char *f_name)
  * @retval -1 in case an error was occurred
  * @retval 	0 if no error occurred
  ******************************************************************************/
-int open_client_mq(const char *f_name, const int n_secs)
+int start_client(const char *f_name, const int n_secs)
 {
 	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");

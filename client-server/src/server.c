@@ -21,15 +21,21 @@
 
 int main(int argc, char **argv)
 {
-  char *f_name 	= NULL;
-	
-	/* set the mode and retrieve the file name */
-	int result = get_server_args(argc, argv, &f_name);
+  char *f_name = NULL;
 
-  if (result == -1)
+  /* Set the mode and retrieve the file name */
+  int result = get_server_args(argc, argv, &f_name);
+
+  if (result == ERROR_CODE)
   {
     return -1;
   }
 
-  return open_server_mq(f_name);
+  if(start_server(f_name) == -1)
+  {
+    printf("An error occurred. Quiting..\n");
+    return -1;
+  }
+
+  return 0;
 }

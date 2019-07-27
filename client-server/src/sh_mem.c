@@ -4,7 +4,7 @@
  *
  * @file  sh_mem.c
  *
- * @brief 
+ * @brief Implements the functionality for the shared memory
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:35$
@@ -22,6 +22,14 @@
 
 #include "sh_mem.h"
 
+/***************************************************************************/ /**
+ * @brief Initializes the shared memory
+ *
+ * @param[in] shm_elm_t - the shared memory object
+ *
+ * @retval -1 - If an error occurred
+ * @retval >0 - The id of the shared memory
+ ******************************************************************************/
 int shm_init(shm_elm_t *shm_obj)
 {
   key_t shmkey;
@@ -35,86 +43,99 @@ int shm_init(shm_elm_t *shm_obj)
     return -1;
   }
 
-  /* Attach to the segment to get a pointer to it.*/
   shmat(shmid, &shm_obj, 0);
-  if ((void *)shm_obj == -1)
+  if (shm_obj == NULL)
   {
-    return 1;
+    return -1;
   }
 
   return shmid;
 }
 
-void shm_free(int shmid, shm_elm_t *const shm_obj)
+/***************************************************************************/ /**
+ * @brief Free the shared memory
+ *
+ * @param[in] shm_id - the shared memory id
+ * @param[in] shm_obj - the shared memory object
+ ******************************************************************************/
+void shm_free(int shm_id, shm_elm_t *const shm_obj)
 {
   shmdt((void *)shm_obj);
-  shmctl(shmid, IPC_RMID, NULL);
+  shmctl(shm_id, IPC_RMID, NULL);
 }
 
-int shm_write(int shmid, shm_elm_t *shmseg, const char* text)
+/***************************************************************************/ /**
+ * @brief Write to the shared memory
+ *
+ * @param[in] shm_id - the shared memory id
+ * @param[in] shm_seg - the shared memory object
+ * @param[in,out] text - The text set from the shared memory
+ *
+ * @retval -1 - If an error occurred
+ * @retval 0 - If success
+ ******************************************************************************/
+int shm_write(int shm_id, shm_elm_t *shm_seg, const char *text)
 {
-  /* struct shmseg *shmp; */
   char *bufptr;
 
-  if (shmid == -1)
+  if (shm_id == -1)
   {
     perror("shm_write");
     return -1;
   }
 
   /* Transfer blocks of data from buffer to shared memory */
-  bufptr = shmseg->msg;
-  shmseg->len = strlen(shmseg->msg);
-  shmseg->state = SHM_EMPTY;
+  bufptr = shm_seg->msg;
+  shm_seg->len = strlen(shm_seg->msg);
+  shm_seg->state = SHM_EMPTY;
   strcpy(bufptr, text);
 
-  shmseg->state = SHM_FULL;
+  shm_seg->state = SHM_FULL;
 
-  printf("\nshm_write: Wrote: %s\n", shmseg->msg);
-  printf("\nshm_write: Writing Process Complete\n");
+  printf("\nshm_write: Wrote: %s\n", shm_seg->msg);
   return 0;
 }
 
-int shm_read(int shmid, shm_elm_t *shmp, char* msg)
+/***************************************************************************/ /**
+ * @brief Read from the shared memory
+ *
+ * @param[in] shm_id - the shared memory id
+ * @param[in] shmp - the shared memory object
+ * @param[in,out] msg - The text set from the shared memory
+ *
+ * @retval -1 - If an error occurred
+ * @retval 0 - If success
+ ******************************************************************************/
+int shm_read(int shm_id, shm_elm_t *shmp, char *msg)
 {
-  if (shmid == -1)
+  if (shm_id == -1)
   {
-    perror("Shared memory");
+    perror("shm_read");
     return -1;
   }
 
-  printf("shmp->state %d\n", shmp->state);
-  printf("shmp->len %d\n", shmp->len);
-  printf("shmp->msg %s\n", shmp->msg);
-  /* Transfer blocks of data from shared memory to stdout*/
-  if (shmp->state != SHM_EMPTY)
+  if (shmp->state == SHM_FULL)
   {
     if (shmp->len == -1)
     {
-      perror("read");
+      perror("shm_read");
       return -1;
     }
 
-    if(shmp->len == 0)
+    if (shmp->len == 0)
     {
       shmp->state = SHM_EMPTY;
       return -1;
     }
 
-    strcpy(&msg, shmp->msg);
-    printf("After strcpy\n");
-    printf("shmp->state %d\n", shmp->state);
-  printf("shmp->len %d\n", shmp->len);
-  printf("shmp->msg %s\n", shmp->msg);
+    strcpy(msg, shmp->msg);
 
-    printf("shm_read Process: Shared Memory: Read %d bytes\n", shmp->len);
+    printf("shm_read: Shared Memory: Read %d bytes\n", shmp->len);
     shmp->state = SHM_EMPTY;
-  }
-  else
-  {
-    return -1;
-  }  
 
-  printf("shm_read Process: Complete\n");
-  return 0;
+    printf("shm_read: Complete\n");
+    return 0;
+  }
+
+  return -1;
 }

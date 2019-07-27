@@ -4,7 +4,7 @@
  *
  * @file  sh_sem.c
  *
- * @brief 
+ * @brief Implements the functionality for the semaphore
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:34$
@@ -19,28 +19,27 @@
 
 #include "sh_sem.h"
 
-int set_semaphore_value()
+int sem_set()
 {
   union semun sem_un;
 
-  sem_un.val = 1;
+  sem_un.semun_value = 1;
 
   return semctl(sem_id, 0, SETVAL, sem_un);
 }
 
-void delete_semaphore()
+void sem_free()
 {
   union semun sem_un;
 
   if (semctl(sem_id, 0, IPC_RMID, sem_un) == -1)
   {
-    printf("Semaphore not deleted... \n");
+    printf("Semaphore: Free failed\n");
     exit(EXIT_FAILURE);
   }
-
   else
   {
-    printf("Semaphore deleted successfully... \n");
+    printf("Semaphore: Successfully removed\n");
   }
 }
 
@@ -54,7 +53,7 @@ int p()
 
   if (semop(sem_id, &sem_buf, 1) == -1)
   {
-    printf("Semaphore p function failed... \n");
+    printf("Semaphore: p failed \n");
     return -1;
   }
 
@@ -71,7 +70,7 @@ int v()
 
   if (semop(sem_id, &sem_buf, 1) == -1)
   {
-    printf("Semaphore v function failed... \n");
+    printf("Semaphore: v failed... \n");
     return -1;
   }
 

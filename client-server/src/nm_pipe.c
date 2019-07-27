@@ -125,7 +125,6 @@ int nmp_recv  (nm_pipe_t *const nmp_obj)
       perror ("msq_recv:: receive message failed");
     }
 
-  printf ("\n nmp_recv [1]: len= %d", nmp_obj->elm.len);
   res = read (nmp_obj->nmp_id, &nmp_obj->elm.msg [0], len);
   if (res <0)
     {

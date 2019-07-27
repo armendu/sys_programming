@@ -23,10 +23,17 @@ int main(int argc, char **argv)
 	/* set the mode and retrieve the file name */
 	int n_secs = get_client_args(argc, argv, &f_name);
 
-  if (n_secs == -1)
+  if (n_secs == ERROR_CODE)
   {
     return -1;
   }
 
-  return open_client_mq(f_name, n_secs);
+  /* Start client */
+  if (start_client(f_name, n_secs) == -1)
+  {
+    printf("An error occurred, quiting...\n");
+    return -1;
+  }
+
+  return 0;
 }

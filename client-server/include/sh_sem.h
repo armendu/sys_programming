@@ -4,7 +4,7 @@
  *
  * @file  sh_sem.h
  *
- * @brief 
+ * @brief Provides functions for the semaphore functionality
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:36$
@@ -17,12 +17,12 @@ static int sem_id;
 
 union semun
 {
-	int val;
+	int semun_value;
 };
 
-int set_semaphore_value();
-void delete_semaphore();
-int p();
-int v();
+int 	sem_set();
+int 	p();
+int 	v();
+void 	sem_free();
 
 #endif /* _SH_SEM__H */

@@ -4,7 +4,7 @@
  *
  * @file  f_ser.h
  *
- * @brief Provides functions for the student file serialization
+ * @brief Provides functions for the file serialization
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 19 May 19, 18:02:25 WEST 2019 $
@@ -12,6 +12,7 @@
 
 #ifndef _F_SER_H_
 #define _F_SER_H 1_
+
 #include <stdio.h>
 
 #define SER_EOF         -2

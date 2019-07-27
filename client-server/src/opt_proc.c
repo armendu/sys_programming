@@ -4,7 +4,7 @@
  *
  * @file  opt_proc.c
  *
- * @brief 
+ * @brief Implements the functionality for argument handling
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 21, Jul 21, 2019 23:40$
@@ -15,8 +15,6 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <signal.h>
-
-#define ERROR_CODE -1 
 
 #include "opt_proc.h"
 
@@ -58,7 +56,7 @@ int get_client_args(int argc, char **argv, char** f_name)
   int n_secs 	= 0;
 
   /* Check no. of arguments */
-	if(argc < 3)
+	if(argc < 2)
 	{
 		printf("Too few arguments provided. \n");
 		usage_client();
@@ -66,7 +64,7 @@ int get_client_args(int argc, char **argv, char** f_name)
 	}
 
 	int opt;
-	while ((opt = getopt(argc, argv, "f:t:")) != -1)
+	while ((opt = getopt(argc, argv, "f:t:h")) != -1)
 	{
 		switch (opt)
 		{
@@ -74,6 +72,9 @@ int get_client_args(int argc, char **argv, char** f_name)
         f_set = opt;
 				*f_name = optarg;
 				break;
+			case 'h':
+				usage_client();
+				return ERROR_CODE;
 			case 't':
 				n_secs = atoi(optarg);
 				break;
@@ -108,7 +109,7 @@ int get_server_args(int argc, char **argv, char** f_name)
   int f_set = 0;
 
   /* Check no. of arguments */
-	if(argc < 3)
+	if(argc < 2)
 	{
 		printf("Too few arguments provided. \n");
 		usage_server();
@@ -116,7 +117,7 @@ int get_server_args(int argc, char **argv, char** f_name)
 	}
 
 	int opt;
-	while ((opt = getopt(argc, argv, "f:")) != -1)
+	while ((opt = getopt(argc, argv, "f:h")) != -1)
 	{
 		switch (opt)
 		{
@@ -124,6 +125,7 @@ int get_server_args(int argc, char **argv, char** f_name)
         f_set = opt;
 				*f_name = optarg;
 				break;
+			case 'h':
 			default:
 				usage_server();
 				return ERROR_CODE;
