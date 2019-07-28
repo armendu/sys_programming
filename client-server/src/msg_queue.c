@@ -31,6 +31,7 @@ void sig_handler(int signum);
 
 mqd_t mq_server;
 sem_t sem;
+shm_elm_t shm_ptr;
 
 /***************************************************************************//** 
  * @brief Starts main server process
@@ -71,16 +72,13 @@ int start_server(const char *f_name)
 		return -1;
 	}
 	
-	shm_elm_t addr;
-	
 	shm_free();
-	if (shm_init(&addr) == -1)
+	if (shm_init(&shm_ptr) == -1)
 	{
 		return -1;
 	}
 
-	shm_write(&addr, "test");
-	printf("wrote to shm\n");
+	printf("shm_ptr status: %d\n", shm_ptr.state);
 
 	/* Create record process */
 	pid_t r_pid;
@@ -94,7 +92,7 @@ int start_server(const char *f_name)
 
 	if (r_pid == 0)
 	{
-		if (handle_recording(f_name) == -1)
+		if (handle_recording(f_name, &shm_ptr) == -1)
 		{
 			return -1;
 		}
@@ -145,7 +143,7 @@ int start_server(const char *f_name)
 						return -1;
 					}
 
-					shm_write(&addr, nmp_obj.elm.msg);
+					shm_write(&shm_ptr, nmp_obj.elm.msg);
 					/*
 					p();
 					printf("\nConnection Handler: Writing: %s", nmp_obj.elm.msg);

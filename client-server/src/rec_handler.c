@@ -16,8 +16,10 @@
 #include <string.h>
 
 #include "rec_handler.h"
+#include "f_ser.h"
+#include "sh_mem.h"
 
-int handle_recording(const char *f_name)
+int handle_recording(const char *f_name, shm_elm_t *shm_ptr)
 {
 	/* Record child process */
 	FILE *fp;
@@ -28,17 +30,17 @@ int handle_recording(const char *f_name)
 		return -1;
 	}
 
-	char *msg = NULL;
 	while (1)
 	{
 		/*
-			if (shm_read(shm_id, &shmptr, msg) == 0)
+		
+		if (1)
+		{
+			if (str_write(fp, "test") > 0)
 			{
-				if (str_write(fp, msg) > 0)
-				{
-					printf("Record process: Wrote all content to file.\n");
-				}
+				printf("Record process: Wrote all content to file.\n");
 			}
-			*/
+		}
+		 */
 	}
 }

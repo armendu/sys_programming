@@ -13,6 +13,8 @@
 #ifndef _RECORD_HANDLER__H
 #define _RECORD_HANDLER__H 1
 
-int handle_recording(const char *f_name);
+#include "sh_mem.h"
+
+int handle_recording(const char *f_name, shm_elm_t *shm_ptr);
 
 #endif /* _RECORD_HANDLER__H */

@@ -43,15 +43,14 @@ int shm_init(shm_elm_t *shm_ptr)
   }
 
   /* configure the size of the shared memory object */
-  if (ftruncate(shm_fd, 1024) == -1)
+  if (ftruncate(shm_fd, sizeof(shm_elm_t)) == -1)
   {
     perror("shm_init");
     return -1;
   }
 
-  printf("sizeof(shm_elm_t) %d\n", sizeof(shm_elm_t));
   /* memory map the shared memory object */
-  shm_ptr = mmap(0, 1024, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+  shm_ptr = mmap(0, sizeof(shm_elm_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
   if (shm_ptr == MAP_FAILED)
   {
@@ -62,6 +61,8 @@ int shm_init(shm_elm_t *shm_ptr)
   strcpy(shm_ptr->msg, "message");
   shm_ptr->len = str_len("message");
   shm_ptr->state = SHM_EMPTY;
+
+  printf("shm_ptr->state: %d\n", shm_ptr->state);
 
   return 0;
 }
