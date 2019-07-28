@@ -64,33 +64,24 @@ int start_server(const char *f_name)
 		perror("Server: mq_open");
 		return -1;
 	}
-	
+
 	/* Semaphor and shared memory */
 	if (create_named_sem(&sem) == -1)
 	{
-		sem_free(SEM_NAME);
 		return -1;
 	}
-	shm_free();
-	shm_elm_t *addr;
-	addr->state = SHM_EMPTY;
-	addr->len = str_len("test");
-
-	if (shm_init(addr) == -1)
-	{
-		shm_free();
-		return -1;
-	}
-
-	shm_elm_t element;
-	element.len = sizeof(element.msg);
-	strcpy(element.msg, "test");
-	printf("element.msg: %s\n", element.msg);
-
-	shm_write(addr, element);
-
-	shm_read(addr);
 	
+	shm_elm_t addr;
+	
+	shm_free();
+	if (shm_init(&addr) == -1)
+	{
+		return -1;
+	}
+
+	shm_write(&addr, "test");
+	printf("wrote to shm\n");
+
 	/* Create record process */
 	pid_t r_pid;
 	r_pid = fork();
@@ -153,6 +144,8 @@ int start_server(const char *f_name)
 						perror("Failed to read from pipe.\n");
 						return -1;
 					}
+
+					shm_write(&addr, nmp_obj.elm.msg);
 					/*
 					p();
 					printf("\nConnection Handler: Writing: %s", nmp_obj.elm.msg);

@@ -17,7 +17,7 @@
 #define SHM_FULL        (char)0x01
 #define SHM_EMPTY       (char)0x02
 #define SHM_PERMISSIONS (int)0666
-#define SHM_NAME        "shared_memory"
+#define SHM_NAME        "/shared_memory"
 #define SHM_SIZE        (int)4096
 
 typedef struct _shm_elm
@@ -29,7 +29,7 @@ typedef struct _shm_elm
 
 int shm_init(shm_elm_t *shm_ptr);
 int shm_read(shm_elm_t *shm_ptr);
-int shm_write(shm_elm_t *shm_ptr, const shm_elm_t shm_element);
+int shm_write(shm_elm_t *shm_ptr, const char* message);
 int shm_free();
 
 #endif /* _SH_MEM__H */

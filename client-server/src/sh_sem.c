@@ -19,13 +19,17 @@
 
 int create_named_sem(sem_t *sem)
 {
-	sem = sem_open(SEM_NAME, O_CREAT | SEM_PERMISSIONS);
+  if (sem )
+	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS);
 	
+  /*
   if (sem == SEM_FAILED)
   {
-    perror("create_named_sem");
+    perror("create_named_sem failed");
     return -1;
   }
+   */
+  
 
   return 0;
 }

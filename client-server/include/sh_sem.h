@@ -13,7 +13,7 @@
 #ifndef _SH_SEM__H
 #define _SH_SEM__H 1
 
-#define SEM_NAME        "logger_semaphore"
+#define SEM_NAME        "/logger-semaphore"
 #define SEM_PERMISSIONS 0666
 
 int create_named_sem(sem_t *sem);
