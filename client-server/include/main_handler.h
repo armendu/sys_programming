@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  msg_queue.h
+ * @file  main_handler.h
  *
  * @brief Provides functions for the message queue communication
  *

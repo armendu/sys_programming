@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  msg_queue.c
+ * @file  main_handler.c
  *
  * @brief Implements the functionality for communicating with message queues
  *
@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "msg_queue.h"
+#include "main_handler.h"
 #include "nm_pipe.h"
 #include "sh_mem.h"
 #include "sh_sem.h"
@@ -247,9 +247,7 @@ int start_client(const char *f_name, const int n_secs)
 			printf("Successfully got message '%s'\n", buff);
 
 			/* Send message in named pipe */
-			int result = nmp_send(&nmp_obj);
-
-			if (result == -1)
+			if (nmp_send(&nmp_obj) == -1)
 			{
 				return -1;
 			}

@@ -44,11 +44,11 @@ $(EXE_DIR):
 ####################################################################
 all: $(OBJ_DIR) $(EXE_DIR) $(EXE_DIR)/client $(EXE_DIR)/server 
 
-$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/rec_handler.o 
-	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o -lrt $(OBJ_DIR)/rec_handler.o -lpthread -o $(EXE_DIR)/client
+$(EXE_DIR)/client: $(OBJ_DIR)/client.o $(OBJ_DIR)/main_handler.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/rec_handler.o 
+	gcc $(OBJ_DIR)/client.o $(OBJ_DIR)/main_handler.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/opt_proc.o -lrt $(OBJ_DIR)/rec_handler.o -lpthread -o $(EXE_DIR)/client
 
-$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o 
-	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/msg_queue.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o  -lrt -lpthread -o $(EXE_DIR)/server
+$(EXE_DIR)/server: $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/main_handler.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o 
+	gcc $(OBJ_DIR)/server.o $(OBJ_DIR)/sh_sem.o $(OBJ_DIR)/sh_mem.o $(OBJ_DIR)/main_handler.o $(OBJ_DIR)/nm_pipe.o $(OBJ_DIR)/opt_proc.o $(OBJ_DIR)/f_ser.o $(OBJ_DIR)/rec_handler.o  -lrt -lpthread -o $(EXE_DIR)/server
 
 $(OBJ_DIR)/client.o: $(SRC_DIR)/client.c 
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/client.o $(SRC_DIR)/client.c 
@@ -62,8 +62,8 @@ $(OBJ_DIR)/sh_sem.o: $(SRC_DIR)/sh_sem.c $(INCLUDE_DIR)/sh_sem.h
 $(OBJ_DIR)/sh_mem.o: $(SRC_DIR)/sh_mem.c $(INCLUDE_DIR)/sh_mem.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/sh_mem.o $(SRC_DIR)/sh_mem.c
 
-$(OBJ_DIR)/msg_queue.o: $(SRC_DIR)/msg_queue.c $(INCLUDE_DIR)/msg_queue.h
-	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/msg_queue.o $(SRC_DIR)/msg_queue.c
+$(OBJ_DIR)/main_handler.o: $(SRC_DIR)/main_handler.c $(INCLUDE_DIR)/main_handler.h
+	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/main_handler.o $(SRC_DIR)/main_handler.c
 
 $(OBJ_DIR)/nm_pipe.o: $(SRC_DIR)/nm_pipe.c $(INCLUDE_DIR)/nm_pipe.h
 	gcc $(FLAGS) $(INCLUDEPATHS) -o $(OBJ_DIR)/nm_pipe.o $(SRC_DIR)/nm_pipe.c

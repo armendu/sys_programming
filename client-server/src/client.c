@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "msg_queue.h"
+#include "main_handler.h"
 #include "opt_proc.h"
 
 int main(int argc, char **argv)

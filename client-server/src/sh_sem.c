@@ -17,8 +17,22 @@
 
 #include "sh_sem.h"
 
+/***************************************************************************/ /**
+ * @brief Free the resource of the semaphore
+ *
+ * @param[in] 		f_name  - the file name
+ * @param[in,out]	shm_ptr - The shared memory pointer
+ *
+ * @retval -1 - If an error occurred
+ * @retval  0 - If the operation was successful
+ ******************************************************************************/
 int sem_free()
 {
-	sem_unlink(SEM_NAME);
+  if (sem_unlink(SEM_NAME) == -1)
+	{
+    perror("sem_free");
+    return -1;
+  }
+
   return 0;
 }
