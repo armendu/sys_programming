@@ -16,9 +16,6 @@
 #define SEM_NAME        "/logger-semaphore"
 #define SEM_PERMISSIONS 0666
 
-int create_named_sem(sem_t *sem);
-int 	p();
-int 	v();
 int 	sem_free();
 
 #endif /* _SH_SEM__H */

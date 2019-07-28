@@ -21,6 +21,5 @@
 
 int str_len   (          /*@null@*/ const char  *str);
 int str_write (FILE *fp, /*@null@*/ const char  *str);
-int str_read  (FILE *fp, /*@null@*/       char **str);
 
 #endif /* _F_SER_H */

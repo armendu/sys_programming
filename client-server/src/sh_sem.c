@@ -17,23 +17,6 @@
 
 #include "sh_sem.h"
 
-int create_named_sem(sem_t *sem)
-{
-  if (sem )
-	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS);
-	
-  /*
-  if (sem == SEM_FAILED)
-  {
-    perror("create_named_sem failed");
-    return -1;
-  }
-   */
-  
-
-  return 0;
-}
-
 int sem_free()
 {
 	sem_unlink(SEM_NAME);

@@ -19,6 +19,9 @@
 #include <errno.h>
 #include <time.h>
 #include <semaphore.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "msg_queue.h"
 #include "nm_pipe.h"
@@ -30,8 +33,8 @@
 void sig_handler(int signum);
 
 mqd_t mq_server;
-sem_t sem;
-shm_elm_t shm_ptr;
+sem_t *sem;
+shm_elm_t *shm_ptr;
 
 /***************************************************************************//** 
  * @brief Starts main server process
@@ -51,6 +54,7 @@ int start_server(const char *f_name)
 
 	msq_elm_t 			message;
 	struct mq_attr 	attr;
+	int 						shm_fd;
 
 	/* Set attributes for server queue */
 	attr.mq_maxmsg = MAX_MESSAGES;
@@ -67,18 +71,32 @@ int start_server(const char *f_name)
 	}
 
 	/* Semaphor and shared memory */
-	if (create_named_sem(&sem) == -1)
-	{
-		return -1;
-	}
-	
-	shm_free();
-	if (shm_init(&shm_ptr) == -1)
-	{
-		return -1;
-	}
+	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS);
 
-	printf("shm_ptr status: %d\n", shm_ptr.state);
+  shm_fd = shm_open(SHM_NAME, O_RDWR | O_CREAT | SHM_PERMISSIONS, 0);
+
+  if (shm_fd == -1)
+  {
+    perror("shm_init");
+    return -1;
+  }
+
+  /* configure the size of the shared memory object */
+  if (ftruncate(shm_fd, sizeof(shm_elm_t)) == -1)
+  {
+    perror("shm_init");
+    return -1;
+  }
+  
+  /* memory map the shared memory object */
+  shm_ptr = mmap(0, sizeof(shm_elm_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+
+  if (shm_ptr == MAP_FAILED)
+  {
+    perror("shm_init");
+    return -1;
+  }
+  shm_ptr->state = SHM_EMPTY;
 
 	/* Create record process */
 	pid_t r_pid;
@@ -92,7 +110,7 @@ int start_server(const char *f_name)
 
 	if (r_pid == 0)
 	{
-		if (handle_recording(f_name, &shm_ptr) == -1)
+		if (handle_recording(f_name, shm_ptr) == -1)
 		{
 			return -1;
 		}
@@ -132,7 +150,7 @@ int start_server(const char *f_name)
 
 			if (pid == 0)
 			{
-				printf("Child process created...\n");
+				printf("Connection handler process created...\n");
 
 				while (1)
 				{
@@ -143,14 +161,13 @@ int start_server(const char *f_name)
 						return -1;
 					}
 
-					shm_write(&shm_ptr, nmp_obj.elm.msg);
-					/*
-					p();
-					printf("\nConnection Handler: Writing: %s", nmp_obj.elm.msg);
-					shm_write(shm_id, &shmptr, nmp_obj.elm.msg);
-					v();
-					 */
-					
+					/* Write to shared memory */
+					sem_post(sem);
+					if (shm_ptr->state == SHM_EMPTY)
+					{
+						shm_write(shm_ptr, nmp_obj.elm.msg);
+					}
+					sem_wait(sem);					
 				}
 			}
 		}
@@ -223,15 +240,7 @@ int start_client(const char *f_name, const int n_secs)
 
 		char buff[NMP_MSG_LEN];
 		while (fgets(buff, NMP_MSG_LEN, fp) != NULL)
-		{
-			int s_len = str_len(buff);
-
-			/* Remove the last character if it's a new line */
-			if (buff[s_len - 1] == '\n')
-			{
-				buff[s_len - 1] = '\0';
-			}
-    	
+		{    	
 			nmp_obj.elm.len = message.len;
 			strcpy(nmp_obj.elm.msg, buff);
 
@@ -245,7 +254,7 @@ int start_client(const char *f_name, const int n_secs)
 				return -1;
 			}
 
-			printf("\nMessage sent to named pipe. Now sleeping...\n");
+			printf("\nMessage sent to named pipe. Now sleeping for '%d' seconds...\n", n_secs);
 			nanosleep((const struct timespec[]){{n_secs, 0L}}, NULL);
 		}
 
@@ -276,7 +285,7 @@ void sig_handler(int signum)
 	mq_unlink(SERVER_QUEUE_NAME);
 
 	/* For the semaphore */
-	sem_close(&sem);
+	sem_close(sem);
 	sem_free();
 
 	/* For the shared memory */

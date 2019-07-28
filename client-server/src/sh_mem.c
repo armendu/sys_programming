@@ -48,7 +48,7 @@ int shm_init(shm_elm_t *shm_ptr)
     perror("shm_init");
     return -1;
   }
-
+  
   /* memory map the shared memory object */
   shm_ptr = mmap(0, sizeof(shm_elm_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
