@@ -71,7 +71,7 @@ int start_server(const char *f_name)
 	}
 
 	/* Semaphor and shared memory */
-	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS);
+	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
 
   shm_fd = shm_open(SHM_NAME, O_RDWR | O_CREAT | SHM_PERMISSIONS, 0);
 
@@ -287,6 +287,7 @@ void sig_handler(int signum)
 	sem_free();
 
 	/* For the shared memory */
+	shm_unlink(SHM_NAME);
 	shm_free();
 
 	exit(0);

@@ -13,8 +13,7 @@
 #ifndef _MAIN_HANDLER__H
 #define _MAIN_HANDLER__H 1
 
-#define SERVER_QUEUE_NAME   "/server_mq"
-#define QUEUE_PERMISSIONS   0666
+#define SERVER_SOCKET_PATH  "/server_sock"
 #define MAX_MESSAGES        10
 #define MSQ_LEN             30
 #define MAX_MSG_SIZE 		256

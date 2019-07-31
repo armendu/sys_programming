@@ -116,7 +116,6 @@ int shm_free()
 {
   if (shm_unlink(SHM_NAME) == -1)
   {
-    perror("shm_free");
     return -1;
   }
 
