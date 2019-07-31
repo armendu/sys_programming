@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  main_handler.h
+ * @file  server_comm.h
  *
  * @brief Provides functions for the message queue communication
  *
@@ -10,10 +10,10 @@
  * @date   $Date: Sun, Jul 21, 2019 23:36$
  */
 
-#ifndef _MAIN_HANDLER__H
-#define _MAIN_HANDLER__H 1
+#ifndef _SERVER_COMM__H
+#define _SERVER_COMM__H 1
 
-#define SERVER_SOCKET_PATH  "/server_sock"
+#define SERVER_SOCKET_PATH  "/tmp/server_sock"
 #define MAX_MESSAGES        10
 #define MSQ_LEN             30
 #define MAX_MSG_SIZE 		256
@@ -27,6 +27,5 @@ typedef struct _msq_elm
 } msq_elm_t;
 
 int start_server(const char *f_name);
-int start_client(const char *f_name, const int n_secs);
 
-#endif /* _MAIN_HANDLER__H */
+#endif /* _SERVER_COMM__H */

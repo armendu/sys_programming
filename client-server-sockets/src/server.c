@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#include "main_handler.h"
+#include "server_comm.h"
 #include "opt_proc.h"
 
 int main(int argc, char **argv)

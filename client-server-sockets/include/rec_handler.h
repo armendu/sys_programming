@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  main_handler.c
+ * @file  server_comm.c
  *
  * @brief Implements the functionality for communicating with message queues
  *

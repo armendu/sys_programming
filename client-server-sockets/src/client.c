@@ -13,11 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "main_handler.h"
+#include "client_comm.h"
 #include "opt_proc.h"
 
 int main(int argc, char **argv)
 {
+  
   char *f_name 	= NULL;
 	
 	/* set the mode and retrieve the file name */
