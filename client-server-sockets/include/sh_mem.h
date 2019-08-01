@@ -26,7 +26,6 @@ typedef struct _shm_elm
   char msg[SHM_MSG_LEN];
 } shm_elm_t;
 
-int shm_read  (shm_elm_t *shm_ptr);
 int shm_write (shm_elm_t *shm_ptr, const char* message);
 int shm_free  ();
 

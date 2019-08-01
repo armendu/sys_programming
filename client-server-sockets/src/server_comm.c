@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/un.h>
+#include <sys/socket.h>
 #include <signal.h>
 #include <errno.h>
 #include <semaphore.h>
@@ -21,14 +23,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <sys/un.h>
-#include <sys/socket.h>
-
 #include "server_comm.h"
 #include "nm_pipe.h"
 #include "sh_mem.h"
 #include "sh_sem.h"
-#include "rec_handler.h"
+#include "rec_proc.h"
 #include "f_ser.h"
 
 void 	sig_handler					(int signum);
@@ -126,7 +125,7 @@ int start_server(const char *f_name)
 
 	if (r_pid == 0)
 	{
-		if (handle_recording(f_name, shm_ptr) == -1)
+		if (handle_rec(f_name, shm_ptr) == -1)
 		{
 			return -1;
 		}
@@ -177,29 +176,12 @@ void free_resources()
 	shm_free();
 }
 
-int handle_nmp_msg()
-{
-	printf("Connection handler process created...\n");
-
-	while (1)
-	{
-		/* Receive information from pipe */
-		if (nmp_recv(&nmp_obj) == -1)
-		{
-			perror("Failed to read from pipe.\n");
-			return -1;
-		}
-
-		/* Write to shared memory*/
-		sem_post(sem);
-		if (shm_ptr->state == SHM_EMPTY)
-		{
-			shm_write(shm_ptr, nmp_obj.elm.msg);
-		}
-		sem_wait(sem);
-	}
-}
-
+/***************************************************************************/ /** 
+ * @brief Handles the sockets clients
+ *
+ * @retval -1 in case an error was occurred
+ * @retval 	0 if no error occurred
+ ******************************************************************************/
 int handle_sock_clients(const int sfd)
 {
 	while (1)
@@ -245,4 +227,38 @@ int handle_sock_clients(const int sfd)
 			}
 		}
 	}
+
+	return 0;
+}
+
+/***************************************************************************/ /** 
+ * @brief Writes the information received from the named pipe in
+ * the shared memory
+ *
+ * @retval -1 in case an error was occurred
+ * @retval 	0 if no error occurred
+ ******************************************************************************/
+int handle_nmp_msg()
+{
+	printf("Connection handler process created...\n");
+
+	while (1)
+	{
+		/* Receive information from pipe */
+		if (nmp_recv(&nmp_obj) == -1)
+		{
+			perror("Failed to read from pipe.\n");
+			return -1;
+		}
+
+		/* Write to shared memory*/
+		sem_post(sem);
+		if (shm_ptr->state == SHM_EMPTY)
+		{
+			shm_write(shm_ptr, nmp_obj.elm.msg);
+		}
+		sem_wait(sem);
+	}
+
+	return 0;
 }

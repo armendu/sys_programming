@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  rec_handler.c
+ * @file  rec_proc.c
  *
  * @brief Implements the functionality for the record handler
  *
@@ -15,7 +15,7 @@
 #include <errno.h>
 #include <string.h>
 
-#include "rec_handler.h"
+#include "rec_proc.h"
 #include "f_ser.h"
 #include "sh_mem.h"
 
@@ -28,7 +28,7 @@
  * @retval -1 - If an error occurred
  * @retval  0 - If the writing was successful
  ******************************************************************************/
-int handle_recording(const char *f_name, shm_elm_t *shm_ptr)
+int handle_rec(const char *f_name, shm_elm_t *shm_ptr)
 {
 	/* Record child process */
 	FILE *fp;

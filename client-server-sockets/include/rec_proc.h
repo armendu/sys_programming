@@ -10,11 +10,11 @@
  * @date   $Date: Sun21, Jul 21, 2019 23:42$
  */
 
-#ifndef _RECORD_HANDLER__H
-#define _RECORD_HANDLER__H 1
+#ifndef _REC_PROC__H
+#define _REC_PROC__H 1
 
 #include "sh_mem.h"
 
-int handle_recording(const char *f_name, shm_elm_t *shm_ptr);
+int handle_rec(const char *f_name, shm_elm_t *shm_ptr);
 
-#endif /* _RECORD_HANDLER__H */
+#endif /* _REC_PROC__H */
