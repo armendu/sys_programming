@@ -38,7 +38,7 @@ int 	handle_nmp_msg			();
 sem_t 			*writer_sem;
 sem_t 			*reader_sem;
 shm_elm_t 	*shm_ptr;
-nm_pipe_t 	nmp_obj;
+nm_pipe_t 	nmp_elem;
 
 /***************************************************************************/ /** 
  * @brief Starts main server process
@@ -186,7 +186,7 @@ int handle_sock_clients(const int sfd)
 		}
 
 		/* Create pipe if it does not exist */
-		if (nmp_init(&nmp_obj, message.msg) == -1)
+		if (nmp_init(&nmp_elem, message.msg) == -1)
 		{
 			printf("Failed to create pipe\n");
 			return -1;
@@ -228,20 +228,24 @@ int handle_nmp_msg()
 	while (1)
 	{
 		/* Receive information from pipe */
-		if (nmp_recv(&nmp_obj) == -1)
+		if (nmp_recv(&nmp_elem) == -1)
 		{
 			perror("Failed to read from pipe.\n");
 			return -1;
 		}
 
-		/* Write to shared memory*/
-		sem_wait(writer_sem);
-		while (shm_ptr->state == SHM_EMPTY)
+		while (1)
 		{
-			shm_write(shm_ptr, nmp_obj.elm.msg);
-			printf("%d\n", shm_ptr->state);
+			if (shm_ptr->state == SHM_EMPTY)
+			{
+				/* Write to shared memory*/
+				sem_wait(writer_sem);
+				shm_write(shm_ptr, nmp_elem.elm.msg);
+				sem_post(writer_sem);
+				break;
+			}
 		}
-		sem_post(writer_sem);
+		
 	}
 
 	return 0;
@@ -264,6 +268,7 @@ void sig_handler(int signum)
 
 	/* For the semaphore */
 	sem_close(writer_sem);
+	sem_close(reader_sem);
 	sem_free();
 
 	/* For the shared memory */

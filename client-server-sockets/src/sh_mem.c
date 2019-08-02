@@ -36,7 +36,7 @@ int shm_write(shm_elm_t *shm_ptr, const char* message)
 {
   int len = 0;
   len = str_len(message);
-
+  
   strcpy(shm_ptr->msg, message);
   shm_ptr->len = len;
   shm_ptr->state = SHM_FULL;

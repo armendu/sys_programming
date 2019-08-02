@@ -39,10 +39,11 @@ FILE *fp = NULL;
  * @retval 	0 if no error occurred
  ******************************************************************************/
 int start_client(const char *f_name, const int n_secs)
-{
-	signal(SIGINT, sig_handler);
+{/*
+	signal(SIGINT, sig_handler);*/
 	printf("Client is running..\n");
 
+	printf("qitu\n");
 	int p_id;
 	msq_elm_t message;
 	nm_pipe_t nmp_obj;
@@ -107,8 +108,6 @@ int start_client(const char *f_name, const int n_secs)
 	{
 		nmp_obj.elm.len = message.len;
 		strcpy(nmp_obj.elm.msg, buff);
-
-		printf("Successfully got message '%s'\n", buff);
 
 		/* Send message in named pipe */
 		if (nmp_send(&nmp_obj) == -1)

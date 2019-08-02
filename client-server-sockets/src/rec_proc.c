@@ -21,6 +21,10 @@
 #include "f_ser.h"
 #include "sh_mem.h"
 
+void signal_handler(int signum);
+
+FILE *fp;
+
 /***************************************************************************/ /**
  * @brief Writes data read from the shared memory to a file
  *
@@ -32,8 +36,9 @@
  ******************************************************************************/
 int handle_rec(const char *f_name, shm_elm_t *shm_ptr, sem_t *reader_sem)
 {	
+	signal(SIGINT, signal_handler);
+
 	/* Record child process */
-	FILE *fp;
 	if ((fp = fopen(f_name, "a+")) == NULL)
 	{
 		printf("\nError opening the file: '%s' [Error string: '%s']\n",
@@ -54,4 +59,14 @@ int handle_rec(const char *f_name, shm_elm_t *shm_ptr, sem_t *reader_sem)
 	}
 
 	return 0;
+}
+
+/***************************************************************************/ /** 
+ * @brief Handles the CTRL+C signal.
+ *
+ * @param[in] signum - The signal number
+ ******************************************************************************/
+void signal_handler(int signum)
+{
+	free(fp);
 }
