@@ -10,14 +10,14 @@
  * @date   $Date: Sun, Jul 21, 2019 23:35$
  */
 
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "sh_mem.h"
 #include "f_ser.h"

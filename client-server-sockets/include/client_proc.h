@@ -10,9 +10,9 @@
  * @date   $Date: 19 May 19, 18:02:25 WEST 2019 $
  */
 
-#ifndef _CLIENT_COMM_H_
-#define _CLIENT_COMM_H 1_
+#ifndef _CLIENT_PROC_H_
+#define _CLIENT_PROC_H 1_
 
 int start_client(const char *f_name, const int n_secs);
 
-#endif /* _CLIENT_COMM_H */
+#endif /* _CLIENT_PROC_H */

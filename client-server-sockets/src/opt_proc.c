@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <getopt.h>
+#include <unistd.h>
 #include <signal.h>
 
 #include "opt_proc.h"
@@ -84,6 +84,7 @@ int get_client_args(int argc, char **argv, char** f_name)
 		}
 	}
 	
+	/* Check if filename was provided */
 	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");
@@ -132,6 +133,7 @@ int get_server_args(int argc, char **argv, char** f_name)
 		}
 	}
 	
+	/* Check if filename was provided */
 	if (f_set == 0)
 	{
 		printf("The option '-f' is mandatory\n");

@@ -13,7 +13,8 @@
 #ifndef _SH_SEM__H
 #define _SH_SEM__H 1
 
-#define SEM_NAME        "/logger-semaphore"
+#define WRITER_SEM_NAME "/logger-semaphore"
+#define READER_SEM_NAME "/reader-semaphore"
 #define SEM_PERMISSIONS 0666
 
 int 	sem_free();

@@ -10,10 +10,10 @@
  * @date   $Date: Sun, Jul 21, 2019 23:34$
  */
 
-#include <semaphore.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stdio.h>
+#include <semaphore.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include "sh_sem.h"
 
@@ -28,8 +28,13 @@
  ******************************************************************************/
 int sem_free()
 {
-  if (sem_unlink(SEM_NAME) == -1)
+  if (sem_unlink(WRITER_SEM_NAME) == -1)
 	{
+    return -1;
+  }
+
+  if (sem_unlink(READER_SEM_NAME) == -1)
+  {
     return -1;
   }
 

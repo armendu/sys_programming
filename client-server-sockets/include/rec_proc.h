@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  server_comm.c
+ * @file  server_proc.c
  *
  * @brief Implements the functionality for communicating with message queues
  *
@@ -13,8 +13,10 @@
 #ifndef _REC_PROC__H
 #define _REC_PROC__H 1
 
+#include <semaphore.h>
+
 #include "sh_mem.h"
 
-int handle_rec(const char *f_name, shm_elm_t *shm_ptr);
+int handle_rec(const char *f_name, shm_elm_t *shm_ptr, sem_t *reader_sem);
 
 #endif /* _REC_PROC__H */

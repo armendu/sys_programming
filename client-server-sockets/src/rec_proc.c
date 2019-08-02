@@ -12,8 +12,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
+#include <errno.h>
+#include <signal.h>
+#include <semaphore.h>
 
 #include "rec_proc.h"
 #include "f_ser.h"
@@ -28,8 +30,8 @@
  * @retval -1 - If an error occurred
  * @retval  0 - If the writing was successful
  ******************************************************************************/
-int handle_rec(const char *f_name, shm_elm_t *shm_ptr)
-{
+int handle_rec(const char *f_name, shm_elm_t *shm_ptr, sem_t *reader_sem)
+{	
 	/* Record child process */
 	FILE *fp;
 	if ((fp = fopen(f_name, "a+")) == NULL)
@@ -45,7 +47,7 @@ int handle_rec(const char *f_name, shm_elm_t *shm_ptr)
 		{
 			if (str_write(fp, shm_ptr->msg) > 0)
 			{
-				printf("Record process: Wrote all content to file.\n");
+				printf("Record process: Wrote content to file.\n");
 			}
 			shm_ptr->state = SHM_EMPTY;
 		}

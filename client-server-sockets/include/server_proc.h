@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  server_comm.h
+ * @file  server_proc.h
  *
  * @brief Provides functions for the message queue communication
  *
@@ -10,8 +10,8 @@
  * @date   $Date: Sun, Jul 21, 2019 23:36$
  */
 
-#ifndef _SERVER_COMM__H
-#define _SERVER_COMM__H 1
+#ifndef _SERVER_PROC__H
+#define _SERVER_PROC__H 1
 
 #define SERVER_SOCKET_PATH  "/tmp/server_sock"
 #define MAX_MESSAGES        10
@@ -28,4 +28,4 @@ typedef struct _msq_elm
 
 int start_server(const char *f_name);
 
-#endif /* _SERVER_COMM__H */
+#endif /* _SERVER_PROC__H */

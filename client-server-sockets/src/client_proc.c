@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  server_comm.c
+ * @file  server_proc.c
  *
  * @brief Implements the functionality for communicating with message queues
  *
@@ -10,17 +10,17 @@
  * @date   $Date: Sun21, Jul 21, 2019 23:35$
  */
 
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <sys/un.h>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
 #include <time.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/types.h>
 
-#include "server_comm.h"
+#include "server_proc.h"
 #include "nm_pipe.h"
 
 void sig_handler(int signum);

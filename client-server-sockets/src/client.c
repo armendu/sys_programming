@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "client_comm.h"
+#include "client_proc.h"
 #include "opt_proc.h"
 
 int main(int argc, char **argv)

@@ -2,7 +2,7 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  server_comm.c
+ * @file  server_proc.c
  *
  * @brief Implements the functionality for communicating with message queues
  *
@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "server_comm.h"
+#include "server_proc.h"
 #include "nm_pipe.h"
 #include "sh_mem.h"
 #include "sh_sem.h"
@@ -35,7 +35,8 @@ int 	handle_sock_clients	(const int sfd);
 void 	free_resources			();
 int 	handle_nmp_msg			();
 
-sem_t 			*sem;
+sem_t 			*writer_sem;
+sem_t 			*reader_sem;
 shm_elm_t 	*shm_ptr;
 nm_pipe_t 	nmp_obj;
 
@@ -55,9 +56,10 @@ int start_server(const char *f_name)
 	signal(SIGINT, sig_handler);
 	printf("Server is running. Waiting for clients...\n");
 
+	int 								shm_fd;
+	int 								sfd;
+	pid_t 							r_pid;
 	struct sockaddr_un 	addr;
-	int shm_fd;
-	int sfd;
 
 	sfd = socket(AF_UNIX, SOCK_STREAM, 0);
 
@@ -75,17 +77,25 @@ int start_server(const char *f_name)
 	if (bind(sfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_un)) == -1)
 	{
 		perror("bind");
+		return -1;
 	}
 
 	if (listen(sfd, MAX_MESSAGES) == -1)
 	{
 		perror("listen");
+		return -1;
 	}
 
 	free_resources();
 
 	/* Semaphor and shared memory */
-	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
+	writer_sem = sem_open(WRITER_SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
+	reader_sem = sem_open(READER_SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
+
+	if (sem_post(writer_sem) == -1)
+	{
+		perror("sem_post: writer_sem");
+	}
 
 	shm_fd = shm_open(SHM_NAME, O_RDWR | O_CREAT | SHM_PERMISSIONS, 0);
 
@@ -114,7 +124,6 @@ int start_server(const char *f_name)
 	shm_ptr->state = SHM_EMPTY;
 
 	/* Create record process */
-	pid_t r_pid;
 	r_pid = fork();
 
 	if (r_pid < 0)
@@ -125,7 +134,7 @@ int start_server(const char *f_name)
 
 	if (r_pid == 0)
 	{
-		if (handle_rec(f_name, shm_ptr) == -1)
+		if (handle_rec(f_name, shm_ptr, reader_sem) == -1)
 		{
 			return -1;
 		}
@@ -137,32 +146,6 @@ int start_server(const char *f_name)
 	}
 
 	return 0;
-}
-
-/***************************************************************************/ /** 
- * @brief Handles the CTRL+C signal.
- *
- * @param[in] signum - The signal number
- ******************************************************************************/
-void sig_handler(int signum)
-{
-	if (signum != SIGINT)
-	{
-		printf("Received invalid signum = %d in sig_handler()\n", signum);
-	}
-
-	printf("Received SIGINT. Exiting Application\n");
-	fflush(stdout);
-
-	/* For the semaphore */
-	sem_close(sem);
-	sem_free();
-
-	/* For the shared memory */
-	shm_unlink(SHM_NAME);
-	shm_free();
-
-	exit(0);
 }
 
 /***************************************************************************/ /** 
@@ -184,11 +167,11 @@ void free_resources()
  ******************************************************************************/
 int handle_sock_clients(const int sfd)
 {
+	int cfd;
+	msq_elm_t message;
+
 	while (1)
 	{
-		int cfd;
-		msq_elm_t message;
-
 		cfd = accept(sfd, NULL, NULL);
 		if (cfd == -1)
 		{
@@ -252,13 +235,40 @@ int handle_nmp_msg()
 		}
 
 		/* Write to shared memory*/
-		sem_post(sem);
-		if (shm_ptr->state == SHM_EMPTY)
+		sem_wait(writer_sem);
+		while (shm_ptr->state == SHM_EMPTY)
 		{
 			shm_write(shm_ptr, nmp_obj.elm.msg);
+			printf("%d\n", shm_ptr->state);
 		}
-		sem_wait(sem);
+		sem_post(writer_sem);
 	}
 
 	return 0;
+}
+
+/***************************************************************************/ /** 
+ * @brief Handles the CTRL+C signal.
+ *
+ * @param[in] signum - The signal number
+ ******************************************************************************/
+void sig_handler(int signum)
+{
+	if (signum != SIGINT)
+	{
+		printf("Received invalid signum = %d in sig_handler()\n", signum);
+	}
+
+	printf("Received SIGINT. Exiting Application\n");
+	fflush(stdout);
+
+	/* For the semaphore */
+	sem_close(writer_sem);
+	sem_free();
+
+	/* For the shared memory */
+	shm_unlink(SHM_NAME);
+	shm_free();
+
+	exit(0);
 }

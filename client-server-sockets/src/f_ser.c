@@ -10,9 +10,9 @@
  * @date   $Date: 19 May 19, 18:02:55 WEST 2019 $
  */
 
+#include <unistd.h>
 #include <stdio.h>
 #include <malloc.h>
-#include <unistd.h>
 
 #include "f_ser.h"
 
