@@ -32,9 +32,11 @@
 
 void sig_handler(int signum);
 
-mqd_t mq_server;
-sem_t *sem;
+mqd_t 		mq_server;
+nm_pipe_t nmp_obj;
+sem_t 		*sem;
 shm_elm_t *shm_ptr;
+FILE 			*fp;
 
 /***************************************************************************//** 
  * @brief Starts main server process
@@ -70,6 +72,8 @@ int start_server(const char *f_name)
 		return -1;
 	}
 
+	shm_free();
+	sem_free();
 	/* Semaphor and shared memory */
 	sem = sem_open(SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
 
@@ -195,7 +199,6 @@ int start_client(const char *f_name, const int n_secs)
 
 	int 			p_id;
 	msq_elm_t message;
-	nm_pipe_t nmp_obj;
 
 	/* Get process id and create message */
 	p_id = getpid();
@@ -230,7 +233,6 @@ int start_client(const char *f_name, const int n_secs)
 		/* open a file */
 		printf("\nClient: The file '%s' is opening ...\n", f_name);
 
-		FILE *fp;
 		if ((fp = fopen(f_name, "r")) == NULL)
 		{
 			printf("\nError opening the file: '%s' [Error string: '%s']\n",
@@ -285,6 +287,8 @@ void sig_handler(int signum)
 	/* For the semaphore */
 	sem_close(sem);
 	sem_free();
+
+	free(fp);
 
 	/* For the shared memory */
 	shm_unlink(SHM_NAME);
