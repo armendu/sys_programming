@@ -2,9 +2,9 @@
  * Copyright (C) 2019 Armend Ukehaxhaj. All rights reserved
  * Prishtine, Kosova. armendd.u@hotmail.com
  *
- * @file  server_proc.c
+ * @file  cleint_proc.c
  *
- * @brief Implements the functionality for communicating with message queues
+ * @brief Implements the functionality for the client process
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun21, Jul 21, 2019 23:35$
@@ -39,14 +39,13 @@ FILE *fp = NULL;
  * @retval 	0 if no error occurred
  ******************************************************************************/
 int start_client(const char *f_name, const int n_secs)
-{/*
-	signal(SIGINT, sig_handler);*/
+{
+	signal(SIGINT, sig_handler);
 	printf("Client is running..\n");
 
-	printf("qitu\n");
 	int p_id;
 	msq_elm_t message;
-	nm_pipe_t nmp_obj;
+	nm_pipe_t nmp_message;
 
 	/* Get process id and create message */
 	p_id = getpid();
@@ -57,7 +56,7 @@ int start_client(const char *f_name, const int n_secs)
 	sprintf(message.msg, "/tmp/nmpiped_%d", p_id);
 
 	/* Create pipe if it does not exist */
-	if (nmp_init(&nmp_obj, message.msg) == -1)
+	if (nmp_init(&nmp_message, message.msg) == -1)
 	{
 		perror("Client: npm_init");
 		return -1;
@@ -106,11 +105,11 @@ int start_client(const char *f_name, const int n_secs)
 	char buff[NMP_MSG_LEN];
 	while (fgets(buff, NMP_MSG_LEN, fp) != NULL)
 	{
-		nmp_obj.elm.len = message.len;
-		strcpy(nmp_obj.elm.msg, buff);
+		nmp_message.elm.len = message.len;
+		strcpy(nmp_message.elm.msg, buff);
 
 		/* Send message in named pipe */
-		if (nmp_send(&nmp_obj) == -1)
+		if (nmp_send(&nmp_message) == -1)
 		{
 			return -1;
 		}
@@ -122,7 +121,7 @@ int start_client(const char *f_name, const int n_secs)
 	/* No more rows to send */
 	printf("File content sent successfully\n.");
 	free(fp);
-	nmp_free(&nmp_obj);
+	nmp_free(&nmp_message);
 
 	return 0;
 }
@@ -140,6 +139,7 @@ void sig_handler(int signum)
 	}
 
 	printf("Received SIGINT. Exiting Application\n");
+	fflush(stdout);
   free(fp);
 
 	exit(-1);

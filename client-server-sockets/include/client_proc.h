@@ -4,7 +4,7 @@
  *
  * @file  f_ser.h
  *
- * @brief Provides functions for the file serialization
+ * @brief Provides functions for the client process
  * 
  * @author (IS) Bsc. Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: 19 May 19, 18:02:25 WEST 2019 $

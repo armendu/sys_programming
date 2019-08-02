@@ -4,7 +4,7 @@
  *
  * @file  server_proc.c
  *
- * @brief Implements the functionality for communicating with message queues
+ * @brief Implements the functionality for the server process
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun21, Jul 21, 2019 23:35$
@@ -93,6 +93,10 @@ int start_server(const char *f_name)
 	reader_sem = sem_open(READER_SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
 
 	if (sem_post(writer_sem) == -1)
+	{
+		perror("sem_post: writer_sem");
+	}
+	if (sem_post(reader_sem) == -1)
 	{
 		perror("sem_post: writer_sem");
 	}
@@ -245,7 +249,6 @@ int handle_nmp_msg()
 				break;
 			}
 		}
-		
 	}
 
 	return 0;

@@ -4,7 +4,7 @@
  *
  * @file  server_proc.h
  *
- * @brief Provides functions for the message queue communication
+ * @brief Provides functions for server process
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun, Jul 21, 2019 23:36$

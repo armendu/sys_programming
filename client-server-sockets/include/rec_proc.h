@@ -4,7 +4,7 @@
  *
  * @file  server_proc.c
  *
- * @brief Implements the functionality for communicating with message queues
+ * @brief Provides functions for the record process
  *
  * @author Armend Ukehaxhaj (armendd.u@hotmail.com)
  * @date   $Date: Sun21, Jul 21, 2019 23:42$

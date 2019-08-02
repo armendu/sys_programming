@@ -58,6 +58,6 @@ int str_write (FILE *fp, const char *str)
   {
     printf ("\nError writing string '%s' to the file", str);
   }
-
+  
   return status;
 }
