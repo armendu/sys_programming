@@ -23,7 +23,7 @@ command:
 
 ./output/exe/server -f "fileName"
 
-The server will create a message queue, and read if a client sends
+The server will create a socket, and read if a client sends 
 a new message.
 
 And if you want to execute the client, you can do so with the following
@@ -31,5 +31,5 @@ command:
 
 ./output/exe/client -f "fileName" -t "number of seconds"
 
-The client will create a message queue and send the name of a named 
+The client will create a socket and send the name of a named 
 pipe to the server.
