@@ -86,20 +86,9 @@ int start_server(const char *f_name)
 		return -1;
 	}
 
-	free_resources();
-
-	/* Semaphor and shared memory */
+	/* Semaphor and shared memory */ 
 	writer_sem = sem_open(WRITER_SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
 	reader_sem = sem_open(READER_SEM_NAME, O_RDWR | O_CREAT | SEM_PERMISSIONS, 0);
-
-	if (sem_post(writer_sem) == -1)
-	{
-		perror("sem_post: writer_sem");
-	}
-	if (sem_post(reader_sem) == -1)
-	{
-		perror("sem_post: writer_sem");
-	}
 
 	shm_fd = shm_open(SHM_NAME, O_RDWR | O_CREAT | SHM_PERMISSIONS, 0);
 
@@ -150,17 +139,6 @@ int start_server(const char *f_name)
 	}
 
 	return 0;
-}
-
-/***************************************************************************/ /** 
- * @brief Clears semaphore and shared memory resources
- *
- * @param[in] signum - The signal number
- ******************************************************************************/
-void free_resources()
-{
-	sem_free();
-	shm_free();
 }
 
 /***************************************************************************/ /** 
@@ -243,9 +221,9 @@ int handle_nmp_msg()
 			if (shm_ptr->state == SHM_EMPTY)
 			{
 				/* Write to shared memory*/
-				sem_wait(writer_sem);
-				shm_write(shm_ptr, nmp_elem.elm.msg);
 				sem_post(writer_sem);
+				shm_write(shm_ptr, nmp_elem.elm.msg);
+				sem_wait(writer_sem);
 				break;
 			}
 		}
