@@ -163,12 +163,12 @@ int start_server(const char *f_name)
         }
 
         /* Write to shared memory */
-        sem_post(&sem);
+        sem_post(sem);
         if (shm_ptr->state == SHM_EMPTY)
         {
           shm_write(shm_ptr, nmp_obj.elm.msg);
         }
-        sem_wait(&sem);
+        sem_wait(sem);
       }
     }
   }
@@ -298,7 +298,7 @@ void sig_handler(int signum)
 
   /* For the shared memory */
   shm_unlink(SHM_NAME);
-  /* shm_free(); */
+  shm_free();
 
   exit(0);
 }
