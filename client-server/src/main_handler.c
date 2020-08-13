@@ -54,14 +54,14 @@ int start_server(const char *f_name)
   signal(SIGINT, sig_handler);
   printf("Server is running. Waiting for clients...\n");
 
-  msq_elm_t message;
-  struct mq_attr attr;
-  int shm_fd;
+  msq_elm_t       message;
+  struct mq_attr  attr;
+  int             shm_fd;
 
   /* Set attributes for server queue */
-  attr.mq_maxmsg = MAX_MESSAGES;
+  attr.mq_maxmsg =  MAX_MESSAGES;
   attr.mq_msgsize = MAX_MSG_SIZE;
-  attr.mq_flags = 0;
+  attr.mq_flags =   0;
   attr.mq_curmsgs = 0;
 
   /* Open message queue */
